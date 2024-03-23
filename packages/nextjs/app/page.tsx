@@ -15,7 +15,7 @@ const Home: NextPage = () => {
     <div className="w-full">
       <Header variant={HeaderVariant.DEFAULT} />
       <div className="w-full flex items-center flex-col ">
-        <div className="flex justify-between w-full">
+        <div className="flex justify-between w-full items-center">
           <h1 className="my-5 text-[#F6F9F6]">Previous Proposals</h1>
           {connectedAddress && (
             <button

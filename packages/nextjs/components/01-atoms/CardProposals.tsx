@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import cc from "classcat";
 import useProposals, { Proposal } from "~~/hooks/useProposal";
 
 const PROPOSALS_SKELETONS_NUMBER = 6;
@@ -9,6 +10,15 @@ export const CardProposals = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { getLastProposals } = useProposals();
+
+  enum ProposalState {
+    Pending = "Pending",
+    Active = "Active",
+    Defeated = "Defeated",
+    Succeeded = "Succeeded",
+    Queued = "Queued",
+    Executed = "Executed",
+  }
 
   const router = useRouter();
   useEffect(() => {
@@ -48,11 +58,19 @@ export const CardProposals = () => {
             >
               <div className="flex flex-col gap-4">
                 <div className="flex justify-between">
-                  <div className="flex gap-2 min-w-[195px]">
+                  <div className="flex gap-2 min-w-[150px]">
                     <div className="text-[#17181C] font-medium text-base flex">{proposal.name}</div>
                     <div className="text-[#A0A1A5] font-medium text-base">#{proposal.id}</div>
                   </div>
-                  <div className="bg-[#0BB76E26] px-2 rounded-md flex">{proposal.status}</div>
+                  <div
+                    className={cc([
+                      "px-2 rounded-md flex",
+                      proposal.status === ProposalState.Active && "bg-[#0BB76E26] ",
+                      proposal.status === ProposalState.Queued && "bg-yellow-200",
+                    ])}
+                  >
+                    {proposal.status}
+                  </div>
                 </div>
                 <div className="flex gap-5">
                   <div className="flex">Yes {proposal.proVotes.length}</div>

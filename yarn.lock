@@ -5203,6 +5203,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"classcat@npm:^5.0.4":
+  version: 5.0.4
+  resolution: "classcat@npm:5.0.4"
+  checksum: 10c0/614880d801128bac1ffb4e9c6a0e5fa93ef693469b2e8546a4bf939c7aff6bbfe1fb047c42bb6c4ad43f74ab86b75fcea6484b9fbf9b238588d3c5dbd497c248
+  languageName: node
+  linkType: hard
+
 "classic-level@npm:^1.2.0":
   version: 1.4.1
   resolution: "classic-level@npm:1.4.1"
@@ -12140,6 +12147,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "se-2@workspace:."
   dependencies:
+    classcat: "npm:^5.0.4"
     husky: "npm:~8.0.3"
     lint-staged: "npm:~13.2.2"
     next: "npm:~14.0.4"
