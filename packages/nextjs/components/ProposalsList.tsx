@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import useProposals, { Proposal } from "~~/hooks/useProposal";
 
 const PROPOSALS_SKELETONS_NUMBER = 6;
@@ -9,6 +10,7 @@ export const ProposalsList = () => {
   const [error, setError] = useState<string | null>(null);
   const { getLastProposals } = useProposals();
 
+  const router = useRouter();
   useEffect(() => {
     setLoading(true);
     getLastProposals()
@@ -36,24 +38,38 @@ export const ProposalsList = () => {
   }
 
   return (
-    <div className="w-full bg-[#F6F9F6]">
+    <div className="w-full flex flex-col text-black">
       <>
         {proposals.map(proposal => {
           return (
-            <div key={proposal.id} className="border border-gray-300 p-4 my-4">
-              <div className="flex justify-between">
-                <h1>{proposal.name}</h1>
-                <span>{proposal.status}</span>
-              </div>
-              <div>
-                <div className="flex space-x-4">
-                  <p>Yes: {proposal.proVotes.length}</p>
-                  <p>No: {proposal.conVotes.length}</p>
+            <div
+              key={proposal.id}
+              className="border border-gray-300 p-4 bg-[#F6F9F6] max-w-[382px]  rounded-xl text-black"
+            >
+              <div className="flex flex-col gap-4">
+                <div className="flex justify-between">
+                  <div className="flex gap-2 min-w-[195px]">
+                    <div className="text-[#17181C] font-medium text-base flex">{proposal.name}</div>
+                    <div className="text-[#A0A1A5] font-medium text-base">#{proposal.id}</div>
+                  </div>
+                  <div className="bg-[#0BB76E26] px-2 rounded-md flex">{proposal.status}</div>
+                </div>
+                <div className="flex gap-5">
+                  <div className="flex">Yes {proposal.proVotes.length}</div>
+                  <div className="flex">No {proposal.conVotes.length}</div>
                 </div>
               </div>
-              <a className="border text-black bg-gray-200 p-1" href={`/proposals/${proposal.id}`}>
-                See details
-              </a>
+              <div className="flex pt-4">
+                <div className="gap-2 flex ">
+                  <button
+                    className="px-3 py-2 bg-[#9192951F] text-sm rounded-[100px]"
+                    onClick={() => router.push(`/proposals/${proposal.id}`)}
+                  >
+                    See details
+                  </button>
+                  <button className="px-3 py-2 bg-[#9192951F] text-sm rounded-[100px]">See txn</button>
+                </div>
+              </div>
             </div>
           );
         })}
