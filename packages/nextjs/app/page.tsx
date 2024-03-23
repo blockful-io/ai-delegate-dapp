@@ -3,9 +3,9 @@
 import { useRouter } from "next/navigation";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
+import { CardProposals } from "~~/components/01-atoms/CardProposals";
 import { Footer } from "~~/components/Footer";
 import { Header, HeaderVariant } from "~~/components/Header";
-import { ProposalsList } from "~~/components/ProposalsList";
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -28,7 +28,7 @@ const Home: NextPage = () => {
             </button>
           )}
         </div>
-        <ProposalsList />
+        <CardProposals />
         <Footer />
       </div>
     </div>
