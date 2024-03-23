@@ -11,7 +11,7 @@ export const Footer = () => {
   const router = useRouter();
 
   return (
-    <div className="w-full ">
+    <div className="w-full  pt-10">
       <div className="flex gap-2">
         <button
           className="px-1 bg-[#F6F9F626] w-full gap-2 h-10 items-center flex justify-center rounded-[100px] text-[#F6F9F6]"

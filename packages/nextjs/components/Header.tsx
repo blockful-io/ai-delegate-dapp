@@ -4,9 +4,6 @@ import React from "react";
 import { StormIcon } from "./01-atoms";
 import { RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
 
-/**
- * Site header
- */
 export const Header = () => {
   return (
     <div className="top-0 navbar bg-base-100 min-h-0 justify-between z-20 py-5 px-6">
@@ -14,7 +11,6 @@ export const Header = () => {
         <StormIcon />
         <RainbowKitCustomConnectButton />
       </div>
-      {/* <FaucetButton /> */}
     </div>
   );
 };
