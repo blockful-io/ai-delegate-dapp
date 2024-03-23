@@ -1,16 +1,24 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import type { NextPage } from "next";
 import { ProposalsList } from "~~/components/ProposalsList";
 
 const Home: NextPage = () => {
+  const router = useRouter();
+
   return (
-    <div className="w-full md:w-[70%] lg:w-[50%] mx-auto my-20">
-      <div className="w-full flex items-center justify-between">
-        <h1 className="my-5">Previous Proposals</h1>
-        <a className="border text-black bg-gray-200 px-2 py-0.5" href="/create-proposal">
+    <div className="w-full md:w-[70%] lg:w-[50%] my-20 px-6 py-6">
+      <div className="w-full flex items-center justify-between ">
+        <h1 className="my-5 text-[#F6F9F6]">Previous Proposals</h1>
+        <button
+          className="border text-black bg-[#B1FF6F] rounded-[100px] px-4 w-[95px] h-10"
+          onClick={() => {
+            router.push("/create-proposal");
+          }}
+        >
           + New
-        </a>
+        </button>
       </div>
       <ProposalsList />
     </div>

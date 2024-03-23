@@ -22,7 +22,7 @@ export const ProposalsList = () => {
   }, []);
 
   return (
-    <div className="w-full">
+    <div className="w-full bg-[#F6F9F6]">
       {loading ? (
         <div className="flex flex-col gap-10">
           {Array.from({ length: PROPOSALS_SKELETONS_NUMBER }).map((_, index) => {
