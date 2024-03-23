@@ -26,14 +26,14 @@ export const FormCreateAI = () => {
     <form className="flex flex-col gap-4 w-full" onSubmit={postAI}>
       <div className="flex flex-col ">
         <label htmlFor="name " className="mb-4 text-[#A0A1A5]">
-          Title
+          AI name
         </label>
         <input
           onChange={e => setName(e.target.value)}
           type="text"
           name="name"
           id="name"
-          placeholder="AI name"
+          placeholder="Smart AI"
           className="p-4 bg-[#323439] rounded-md text-white"
         />
       </div>
