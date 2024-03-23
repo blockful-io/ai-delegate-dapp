@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { RainbowKitProvider, darkTheme, lightTheme } from "@rainbow-me/rainbowkit";
+import { Footer } from "./Footer";
+import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
 import { useTheme } from "next-themes";
 import { Toaster } from "react-hot-toast";
 import { WagmiConfig } from "wagmi";
@@ -25,10 +26,14 @@ const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      <div className="flex flex-col min-h-screen">
-        <Header />
-        <main className="relative flex flex-col flex-1">{children}</main>
-        {/* <Footer /> */}
+      <div className="flex flex-col w-screen h-screen lg:px-[150px] md:px-[150px]">
+        <div className="flex justify-center items-center">
+          <Header />
+        </div>
+        <main className="flex flex-col">{children}</main>
+        <div className="pt-4 px-6 pb-6 ">
+          <Footer />
+        </div>
       </div>
       <Toaster />
     </>
@@ -50,7 +55,7 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
       <RainbowKitProvider
         chains={appChains.chains}
         avatar={BlockieAvatar}
-        theme={mounted ? (isDarkMode ? darkTheme() : lightTheme()) : lightTheme()}
+        theme={mounted ? (isDarkMode ? darkTheme() : darkTheme()) : darkTheme()}
       >
         <ScaffoldEthApp>{children}</ScaffoldEthApp>
       </RainbowKitProvider>

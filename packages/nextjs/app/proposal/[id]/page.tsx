@@ -6,6 +6,21 @@
 import { useEffect, useState } from "react";
 import { Proposal, getProposal } from "~~/services/web3/getProposals";
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+/* eslint-disable prettier/prettier */
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+/* eslint-disable prettier/prettier */
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+/* eslint-disable prettier/prettier */
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+/* eslint-disable prettier/prettier */
 
 const AI_SKELETONS_NUMBER = 1;
 
@@ -39,7 +54,7 @@ export default function Page({ params, searchParams }: Props) {
   };
 
   return (
-    <div className="w-full md:w-[70%] lg:w-[50%] mx-auto my-20">
+    <div className="w-full md:w-[70%] lg:w-[50%] my-20">
       {loading ? (
         <div className="flex flex-col gap-10">
           {Array.from({ length: AI_SKELETONS_NUMBER }).map((_, index) => {

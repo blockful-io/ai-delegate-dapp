@@ -8,7 +8,7 @@ const Home: NextPage = () => {
   const router = useRouter();
 
   return (
-    <div className="w-full md:w-[70%] lg:w-[50%] my-20 px-6 py-6">
+    <div className="w-full px-6">
       <div className="w-full flex items-center justify-between ">
         <h1 className="my-5 text-[#F6F9F6]">Previous Proposals</h1>
         <button

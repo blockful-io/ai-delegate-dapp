@@ -36,7 +36,7 @@ export const RainbowKitCustomConnectButton = () => {
                     onClick={openConnectModal}
                     type="button"
                   >
-                    <AccountWalletIcon />
+                    <AccountWalletIcon className="text-[#17181C]" />
                     Connect
                   </button>
                 );
