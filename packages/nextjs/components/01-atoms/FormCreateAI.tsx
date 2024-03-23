@@ -26,14 +26,14 @@ export const FormCreateAI = () => {
     <form className="flex flex-col gap-4 w-full" onSubmit={postAI}>
       <div className="flex flex-col ">
         <label htmlFor="name " className="mb-4 text-[#A0A1A5]">
-          Title
+          AI name
         </label>
         <input
           onChange={e => setName(e.target.value)}
           type="text"
           name="name"
           id="name"
-          placeholder="AI name"
+          placeholder="Smart AI"
           className="p-4 bg-[#323439] rounded-md text-white"
         />
       </div>
@@ -41,7 +41,7 @@ export const FormCreateAI = () => {
       <div className="w-full flex flex-col">
         <div className="w-full flex justify-between items-center">
           <label htmlFor="summary" className="text-[#A0A1A5]">
-            Content
+            Prompt
           </label>
           <p className="text-[#A0A1A5]">{bias.length} / 250</p>
         </div>
