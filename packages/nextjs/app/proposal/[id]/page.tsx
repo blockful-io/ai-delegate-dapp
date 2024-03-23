@@ -1,26 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
 "use client";
 
 import { useEffect, useState } from "react";
 import { Proposal, getProposal } from "~~/services/web3/getProposals";
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
 
 const AI_SKELETONS_NUMBER = 1;
 
@@ -29,7 +10,7 @@ type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
-export default function Page({ params, searchParams }: Props) {
+export default function Page({ params }: Props) {
   const [ai, setProposal] = useState<Proposal>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -102,10 +83,7 @@ export default function Page({ params, searchParams }: Props) {
             </div>
             <div className="mt-4 w-full flex justify-between">
               <button onClick={() => delegateVotes(ai)} className="border bg-gray-200 text-black p-0.5 px-2">
-                {
-                  // TODO: change the button text to "Revoke" if the connectedAddress has delegated votes to this AI
-                  "Delegate"
-                }
+                Delegate
               </button>
             </div>
           </div>
