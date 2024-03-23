@@ -1,5 +1,7 @@
+"use client";
+
 import { useCallback } from "react";
-import { createPublicClient, decodeFunctionResult, encodeFunctionData, http, parseEther } from "viem";
+import { createPublicClient, createWalletClient, custom, encodeFunctionData, http } from "viem";
 import { hardhat, sepolia } from "viem/chains";
 import { useAccount } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
@@ -22,6 +24,11 @@ export interface Vote {
 
 const useProposals = () => {
   const { address } = useAccount();
+  const walletClient = createWalletClient({
+    account: address,
+    chain: sepolia,
+    transport: custom(window.ethereum!),
+  });
   const publicClient = createPublicClient({
     chain: sepolia,
     // transport: http(),
@@ -29,34 +36,30 @@ const useProposals = () => {
   });
   const contract = deployedContracts[publicClient.chain.id].NDCGovernor;
 
-  const getLastProposals = useCallback(async (): Promise<Proposal[]> => {
-    const events = await publicClient.getContractEvents({
-      abi: contract.abi,
-      address: contract.address,
-      eventName: "ProposalCreated",
-      fromBlock: 0n,
-    });
+  const getLastProposals = useCallback(
+    async ({ limit = 4 }: { limit?: number } = {}): Promise<Proposal[]> => {
+      const events = await publicClient.getContractEvents({
+        abi: contract.abi,
+        address: contract.address,
+        eventName: "ProposalCreated",
+        fromBlock: 0n,
+      });
 
-    // proposalId?: bigint | undefined;
-    // proposer?: string | undefined;
-    // targets?: readonly string[] | undefined;
-    // values?: readonly bigint[] | undefined;
-    // signatures?: readonly string[] | undefined;
-    // calldatas?: readonly `0x${string}`[] | undefined;
-    // voteStart?: bigint | undefined;
-    // voteEnd?: bigint | undefined;
-    // description?: string | undefined;
-
-    console.log({ events });
-    return events.map(({ args }) => ({
-      id: args.proposalId!.toString(),
-      proVotes: [],
-      conVotes: [],
-      name: args.description!,
-      summary: args.description!,
-      status: "Defeated",
-    }));
-  }, [publicClient, contract]);
+      console.log({ events });
+      return events
+        .reverse()
+        .slice(0, limit)
+        .map(({ args }) => ({
+          id: args.proposalId!.toString(),
+          proVotes: [],
+          conVotes: [],
+          name: args.description!,
+          summary: args.description!,
+          status: "Defeated",
+        }));
+    },
+    [publicClient, contract],
+  );
 
   const createProposal = useCallback(
     async ({ name }: Pick<Proposal, "name">): Promise<void> => {
@@ -66,25 +69,17 @@ const useProposals = () => {
         args: [[contract.address], [0n], ["0x"], name],
       });
 
-      const response = await publicClient.call({
+      if (!address) {
+        return;
+      }
+
+      await walletClient.sendTransaction({
         to: contract.address,
         data,
         account: address,
       });
-
-      if (!response.data) {
-        throw "unable to create";
-      }
-
-      const output = decodeFunctionResult({
-        functionName: "propose",
-        abi: contract.abi,
-        data: response.data,
-      });
-
-      console.log({ output });
     },
-    [publicClient, contract, address],
+    [walletClient, contract, address],
   );
 
   return { getLastProposals, createProposal };
