@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
 "use client";
 
 import { useEffect, useState } from "react";
+import useDelegateVote from "~~/hooks/useDelegateVote";
 import { AI, getAI } from "~~/services/ai/getAIs";
 
 const AI_SKELETONS_NUMBER = 1;
@@ -13,29 +11,26 @@ type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
-export default function Page({ params, searchParams }: Props) {
+export default function Page({ params }: Props) {
   const [ai, setAI] = useState<AI>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { delegateVote, isDelegated, revokeVote } = useDelegateVote();
 
   useEffect(() => {
-    setLoading(true);
-
-    try {
-      const ai = getAI(params.id);
-      setAI(ai);
-    } catch (error: unknown) {
-      setError(String(error));
+    async function asyncGetAi() {
+      setLoading(true);
+      setAI(await getAI(params.id));
     }
 
-    setLoading(false);
+    asyncGetAi()
+      .then(() => setLoading(false))
+      .catch(e => setError(String(e)));
   }, [params.id]);
 
-  // TODO: fetch information of wether the connectedAddress has delegated votes to some loaded AI or not
-  const delegateVotes = (ai: AI) => {
-    // TODO: delegate votes to the selected AI
-    alert(`Implement delegate votes to AI: ${ai.name}`);
-  };
+  useEffect(() => {
+    setLoading(delegateVote.isLoading || revokeVote.isLoading);
+  }, [delegateVote.isLoading, revokeVote.isLoading]);
 
   return (
     <div className="w-full md:w-[70%] lg:w-[50%] mx-auto my-20">
@@ -62,15 +57,29 @@ export default function Page({ params, searchParams }: Props) {
               </div>
             </div>
             <div className="w-full flex justify-between">
-              <a className="border bg-gray-200 text-black p-1 px-2" href={"/ai/" + ai.id}>
-                See details
-              </a>
-              <button onClick={() => delegateVotes(ai)} className="border bg-gray-200 text-black p-0.5 px-2">
-                {
-                  // TODO: change the button text to "Revoke" if the connectedAddress has delegated votes to this AI
-                  "Delegate"
-                }
-              </button>
+              {isDelegated ? (
+                <button
+                  onClick={() =>
+                    revokeVote.write({
+                      args: ai.id,
+                    })
+                  }
+                  className="border bg-gray-200 text-black p-0.5 px-2"
+                >
+                  Revoke
+                </button>
+              ) : (
+                <button
+                  onClick={() =>
+                    delegateVote.write({
+                      args: ai.id,
+                    })
+                  }
+                  className="border bg-gray-200 text-black p-0.5 px-2"
+                >
+                  Delegate
+                </button>
+              )}
             </div>
           </div>
         </>
