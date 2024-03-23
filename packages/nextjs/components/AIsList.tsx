@@ -1,13 +1,12 @@
 import DelegateButton from "./DelegateButton";
 import RevokeButton from "./RevokeButton";
-import { AI } from "~~/services/ai";
+import { AI } from "~~/hooks/useDelegates";
 
 interface AIListProps {
   delegates: AI[];
-  delegated: boolean;
 }
 
-export const AIsList = ({ delegates, delegated }: AIListProps) => {
+export const AIsList = ({ delegates }: AIListProps) => {
   return (
     <div className="w-full">
       <>
@@ -27,7 +26,7 @@ export const AIsList = ({ delegates, delegated }: AIListProps) => {
                 <a className="border bg-gray-200 text-black p-1 px-2" href={`/delegates/${d.id}`}>
                   See details
                 </a>
-                {delegated ? <RevokeButton id={d.id} /> : <DelegateButton id={d.id} />}
+                {d.delegated ? <RevokeButton id={d.id} /> : <DelegateButton id={d.id} />}
               </div>
             </div>
           );

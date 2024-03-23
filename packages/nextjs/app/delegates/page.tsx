@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { AIsList } from "~~/components/AIsList";
-import { AI, getAIs } from "~~/services/ai";
+import useDelegates, { AI } from "~~/hooks/useDelegates";
 
 const AI_SKELETONS_NUMBER = 6;
 
@@ -11,27 +11,20 @@ const Delegate: NextPage = () => {
   const [ais, setAIs] = useState<AI[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { fetchDelegates } = useDelegates();
 
   useEffect(() => {
-    async function asyncGetAi() {
-      setLoading(true);
-
-      try {
-        const ais = await getAIs();
-        setAIs(ais);
-      } catch (error: unknown) {
-        setError(String(error));
-      }
-
-      setLoading(false);
-    }
-    asyncGetAi().catch(console.error);
+    setLoading(true);
+    fetchDelegates()
+      .then(setAIs)
+      .catch(setError)
+      .finally(() => setLoading(false));
   }, []);
 
   if (error) {
     return (
       <div>
-        <h1>Error: {error}</h1>
+        <h1>Error...</h1>
       </div>
     );
   }
@@ -51,7 +44,7 @@ const Delegate: NextPage = () => {
       <div>
         <h1 className="my-5">Delegate to biased AI</h1>
       </div>
-      <AIsList delegates={ais} delegated={false} />
+      <AIsList delegates={ais} />
     </div>
   );
 };

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import DelegateButton from "~~/components/DelegateButton";
 import RevokeButton from "~~/components/RevokeButton";
-import { AI, getAI } from "~~/services/ai";
+import useDelegates, { AI } from "~~/hooks/useDelegates";
 
 const AI_SKELETONS_NUMBER = 1;
 
@@ -16,16 +16,15 @@ export default function Page({ params }: Props) {
   const [ai, setAI] = useState<AI | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { fetchDelegate } = useDelegates();
 
   useEffect(() => {
-    async function asyncGetAi() {
-      setLoading(true);
-      setAI(await getAI({ id: params.id }));
-    }
+    setLoading(true);
 
-    asyncGetAi()
-      .then(() => setLoading(false))
-      .catch(e => setError(String(e)));
+    fetchDelegate({ id: params.id })
+      .then(setAI)
+      .catch(setError)
+      .finally(() => setLoading(false));
   }, [params.id]);
 
   if (loading) {
@@ -41,7 +40,7 @@ export default function Page({ params }: Props) {
   if (error || !ai) {
     return (
       <div>
-        <h1>Error: {error}</h1>
+        <h1>Error...</h1>
       </div>
     );
   }
@@ -59,8 +58,7 @@ export default function Page({ params }: Props) {
           </div>
         </div>
         <div className="w-full flex justify-between">
-          {ai && true && <RevokeButton id={ai.id} />}
-          {ai && <DelegateButton id={ai.id} />}
+          {ai.delegated ? <RevokeButton id={ai.id} /> : <DelegateButton id={ai.id} />}
         </div>
       </div>
     </div>
