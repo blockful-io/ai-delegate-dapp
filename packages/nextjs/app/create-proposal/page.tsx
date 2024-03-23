@@ -8,7 +8,7 @@ const CreateProposal: NextPage = () => {
   return (
     <div className="w-full">
       <Header variant={HeaderVariant.SECONDARY} />
-      <div className="w-full flex items-center  flex-col">
+      <div className="w-full flex items-center flex-col">
         <FormCreateProposal />
       </div>
     </div>
