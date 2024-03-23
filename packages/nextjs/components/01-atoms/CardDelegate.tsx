@@ -5,7 +5,7 @@ import { AddressWalletIcon } from "./AddressWalletIcon";
 import { HandIcon } from "./HandIcon";
 import { InfoIcon } from "./InfoIcon";
 import { useAccount } from "wagmi";
-import { AI, getAI } from "~~/services/ai";
+import useDelegates, { AI } from "~~/hooks/useDelegates";
 
 type Props = {
   params: { id: string };
@@ -16,17 +16,17 @@ export const CardDelegate = ({ params }: Props) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { address: connectedAddress } = useAccount();
+  const { fetchDelegate } = useDelegates();
+
   const AI_SKELETONS_NUMBER = 1;
 
   useEffect(() => {
-    async function asyncGetAi() {
-      setLoading(true);
-      setAI(await getAI({ id: params.id }));
-    }
+    setLoading(true);
 
-    asyncGetAi()
-      .then(() => setLoading(false))
-      .catch(e => setError(String(e)));
+    fetchDelegate({ id: params.id })
+      .then(setAI)
+      .catch(setError)
+      .finally(() => setLoading(false));
   }, [params.id]);
 
   if (loading) {
