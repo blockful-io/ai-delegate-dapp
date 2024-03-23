@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { createPublicClient, encodeFunctionData, http } from "viem";
-import { localhost } from "viem/chains";
+import { sepolia } from "viem/chains";
 import deployedContracts from "~~/contracts/deployedContracts";
 
 export interface Proposal {
@@ -21,55 +21,39 @@ export interface Vote {
 
 const useProposals = () => {
   const publicClient = createPublicClient({
-    chain: localhost,
-    transport: http(),
+    chain: sepolia,
+    transport: http("https://eth-sepolia.g.alchemy.com/v2/bow93SW8hqPm2T1pRjzWcGdgueB-lvpb"),
   });
-  const contract = deployedContracts[31337].YourContract;
+  const contract = deployedContracts[publicClient.chain.id].NDCGovernor;
 
   const getLastProposals = useCallback(async (): Promise<Proposal[]> => {
     const events = await publicClient.getContractEvents({
       abi: contract.abi,
       address: contract.address,
-      eventName: "GreetingChange",
+      eventName: "ProposalCreated",
+      fromBlock: 5546386n,
     });
 
+    // proposalId?: bigint | undefined;
+    // proposer?: string | undefined;
+    // targets?: readonly string[] | undefined;
+    // values?: readonly bigint[] | undefined;
+    // signatures?: readonly string[] | undefined;
+    // calldatas?: readonly `0x${string}`[] | undefined;
+    // voteStart?: bigint | undefined;
+    // voteEnd?: bigint | undefined;
+    // description?: string | undefined;
+
     console.log({ events });
-    return events.map(ev => ({
-      id: "1",
-      name: ev.args.newGreeting!,
-      summary: "b",
+    return events.map(({ args }) => ({
+      id: args.proposalId!.toString(),
       proVotes: [],
       conVotes: [],
-      status: "Queued",
+      name: args.description!,
+      summary: args.description!,
+      status: "Defeated",
     }));
   }, [publicClient, contract]);
-
-  const getProposal = useCallback(
-    async ({ id }: Pick<Proposal, "id">): Promise<Proposal> => {
-      const event = await publicClient.getContractEvents({
-        abi: contract.abi,
-        address: contract.address,
-        eventName: "GreetingChange",
-        args: { greetingSetter: id },
-      });
-
-      if (event.length == 0) {
-        throw "proposal not found";
-      }
-
-      const args = event[0].args;
-
-      return {
-        id: "1",
-        name: args.greetingSetter!,
-        summary: "b",
-        proVotes: [],
-        conVotes: [],
-        status: "Queued",
-      };
-    },
-    [publicClient, contract],
-  );
 
   const createProposal = useCallback(
     async ({ name }: Pick<Proposal, "name" | "summary">): Promise<void> => {
@@ -88,7 +72,7 @@ const useProposals = () => {
     [publicClient, contract],
   );
 
-  return { getLastProposals, getProposal, createProposal };
+  return { getLastProposals, createProposal };
 };
 
 export default useProposals;

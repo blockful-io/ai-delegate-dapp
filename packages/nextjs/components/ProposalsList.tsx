@@ -51,9 +51,12 @@ export const ProposalsList = () => {
                   <p>No: {proposal.conVotes.length}</p>
                 </div>
               </div>
-              <a className="border text-black bg-gray-200 p-1" href={`/proposals/${proposal.id}`}>
+              <button
+                onClick={() => console.log("+ detalhes: ", proposal.id)}
+                className="border text-black bg-gray-200 p-1"
+              >
                 See details
-              </a>
+              </button>
             </div>
           );
         })}
