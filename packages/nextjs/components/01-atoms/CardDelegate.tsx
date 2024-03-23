@@ -16,7 +16,7 @@ export const CardDelegate = ({ params }: Props) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { address: connectedAddress } = useAccount();
-  const { fetchDelegate } = useDelegates();
+  const { fetchDelegate, delegate } = useDelegates();
 
   const AI_SKELETONS_NUMBER = 1;
 
@@ -81,25 +81,14 @@ export const CardDelegate = ({ params }: Props) => {
             <button className="px-3 py-2 bg-[#9192951F] text-sm rounded-[100px]">See txn</button>
           </div>
           <div>
-            <button className="bg-[#B1FF6F] text-[#17181C] rounded-[100px] text-sm font-normal px-3 py-2">
+            <button
+              onClick={() => delegate({ id: ai.id })}
+              className="bg-[#B1FF6F] text-[#17181C] rounded-[100px] text-sm font-normal px-3 py-2"
+            >
               Delegate
             </button>
           </div>
         </div>
-
-        {/* <div className="flex justify-between">
-        <h1>{ai.name}</h1>
-      </div>
-      <div>
-        <div className="flex space-x-4">
-          <p>Bias: {ai.biasSummary}</p>
-          <p>Voting Power: {ai.votingPower}</p>
-        </div>
-      </div>
-      <div className="w-full flex justify-between">
-        {ai && true && <RevokeButton id={ai.id} />}
-        {ai && <DelegateButton id={ai.id} />}
-      </div> */}
       </div>
     </div>
   );

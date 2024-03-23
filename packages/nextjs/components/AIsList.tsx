@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { HandIcon } from "./01-atoms/HandIcon";
 import { InfoIcon } from "./01-atoms/InfoIcon";
-import { AI } from "~~/hooks/useDelegates";
+import useDelegates, { AI } from "~~/hooks/useDelegates";
 
 interface AIListProps {
   delegates: AI[];
@@ -9,6 +10,15 @@ interface AIListProps {
 
 export const AIsList = ({ delegates }: AIListProps) => {
   const router = useRouter();
+  const { delegate } = useDelegates();
+  const [loading, setLoading] = useState(false);
+
+  async function onDelegate(id: string) {
+    setLoading(true);
+    await delegate({ id });
+    setLoading(false);
+  }
+
   return (
     <div className="w-full flex flex-col gap-3">
       <>
@@ -57,18 +67,20 @@ export const AIsList = ({ delegates }: AIListProps) => {
                   <button className="px-3 py-2 bg-[#9192951F] text-sm rounded-[100px]">See txn</button>
                 </div>
                 <div>
-                  <button className="bg-[#B1FF6F] text-[#17181C] rounded-[100px] text-sm font-normal px-3 py-2">
-                    Delegate
-                  </button>
+                  {loading ? (
+                    <span className="bg-[#B1FF6F] text-[#17181C] rounded-[100px] text-sm font-normal px-3 py-2">
+                      loading
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => onDelegate(d.id)}
+                      className="bg-[#B1FF6F] text-[#17181C] rounded-[100px] text-sm font-normal px-3 py-2"
+                    >
+                      Delegate
+                    </button>
+                  )}
                 </div>
               </div>
-
-              {/* <div className="w-full flex justify-between">
-                <a className="border bg-gray-200 text-black p-1 px-2" href={`/delegates/${d.id}`}>
-                  See details
-                </a>
-                {delegated ? <RevokeButton id={d.id} /> : <DelegateButton id={d.id} />}
-              </div> */}
             </div>
           );
         })}
