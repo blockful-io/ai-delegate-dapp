@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
 import { Footer } from "~~/components/Footer";
-import { Header } from "~~/components/Header";
+import { Header, HeaderVariant } from "~~/components/Header";
 import { ProposalsList } from "~~/components/ProposalsList";
 
 const Home: NextPage = () => {
@@ -13,7 +13,7 @@ const Home: NextPage = () => {
 
   return (
     <div className="w-full">
-      <Header />
+      <Header variant={HeaderVariant.DEFAULT} />
       <div className="w-full flex items-center flex-col ">
         <div className="flex justify-between w-full">
           <h1 className="my-5 text-[#F6F9F6]">Previous Proposals</h1>
