@@ -1,8 +1,8 @@
 import { createWalletClient, http, publicActions } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { mainnet } from "viem/chains";
-import { governorAbi } from "./abi/governor";
-import { governorAddress } from "./utils/constants";
+import { governorAbi } from "./abi";
+import { governorAddress } from "./utils";
 
 async function main() {
   const account = privateKeyToAccount("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80");

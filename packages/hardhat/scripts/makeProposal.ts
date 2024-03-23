@@ -23,7 +23,7 @@ async function makeProposal(proposal: string) {
   await client.writeContract(request);
 }
 
-makeProposal("Von deploya contrato novo").catch(error => {
+makeProposal("Von deploya contrato novo 3").catch(error => {
   console.error(error);
   process.exitCode = 1;
 });
