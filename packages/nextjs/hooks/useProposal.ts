@@ -1,6 +1,7 @@
 import { useCallback } from "react";
-import { createPublicClient, encodeFunctionData, http } from "viem";
-import { sepolia } from "viem/chains";
+import { createPublicClient, decodeFunctionResult, encodeFunctionData, http, parseEther } from "viem";
+import { hardhat, sepolia } from "viem/chains";
+import { useAccount } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 
 export interface Proposal {
@@ -8,7 +9,7 @@ export interface Proposal {
   name: string;
   txHash?: string;
   summary: string;
-  status: "Executed" | "Queued" | "Defeated" | "Succeeded";
+  status: "Executed" | "Queued" | "Defeated" | "Succeeded" | "Active";
   proVotes: Vote[];
   conVotes: Vote[];
 }
@@ -20,8 +21,10 @@ export interface Vote {
 }
 
 const useProposals = () => {
+  const { address } = useAccount();
   const publicClient = createPublicClient({
     chain: sepolia,
+    // transport: http(),
     transport: http("https://eth-sepolia.g.alchemy.com/v2/bow93SW8hqPm2T1pRjzWcGdgueB-lvpb"),
   });
   const contract = deployedContracts[publicClient.chain.id].NDCGovernor;
@@ -31,7 +34,7 @@ const useProposals = () => {
       abi: contract.abi,
       address: contract.address,
       eventName: "ProposalCreated",
-      fromBlock: 5546386n,
+      fromBlock: 0n,
     });
 
     // proposalId?: bigint | undefined;
@@ -56,20 +59,32 @@ const useProposals = () => {
   }, [publicClient, contract]);
 
   const createProposal = useCallback(
-    async ({ name }: Pick<Proposal, "name" | "summary">): Promise<void> => {
+    async ({ name }: Pick<Proposal, "name">): Promise<void> => {
       const data = encodeFunctionData({
         abi: contract.abi,
-        functionName: "setGreeting",
-        args: [name],
+        functionName: "propose",
+        args: [[contract.address], [0n], ["0x"], name],
       });
 
       const response = await publicClient.call({
         to: contract.address,
         data,
+        account: address,
       });
-      console.log({ response });
+
+      if (!response.data) {
+        throw "unable to create";
+      }
+
+      const output = decodeFunctionResult({
+        functionName: "propose",
+        abi: contract.abi,
+        data: response.data,
+      });
+
+      console.log({ output });
     },
-    [publicClient, contract],
+    [publicClient, contract, address],
   );
 
   return { getLastProposals, createProposal };
