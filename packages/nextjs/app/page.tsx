@@ -1,18 +1,36 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import type { NextPage } from "next";
+import { useAccount } from "wagmi";
+import { Footer } from "~~/components/Footer";
+import { Header } from "~~/components/Header";
 import { ProposalsList } from "~~/components/ProposalsList";
 
 const Home: NextPage = () => {
+  const router = useRouter();
+  const { address: connectedAddress } = useAccount();
+
   return (
-    <div className="w-full md:w-[70%] lg:w-[50%] mx-auto my-20">
-      <div className="w-full flex items-center justify-between">
-        <h1 className="my-5">Previous Proposals</h1>
-        <a className="border text-black bg-gray-200 px-2 py-0.5" href="/create-proposal">
-          + New
-        </a>
+    <div className="w-full">
+      <Header />
+      <div className="w-full flex items-center flex-col ">
+        <div className="flex justify-between w-full">
+          <h1 className="my-5 text-[#F6F9F6]">Previous Proposals</h1>
+          {connectedAddress && (
+            <button
+              className="border text-black bg-[#B1FF6F] rounded-[100px] px-4 w-[95px] h-10"
+              onClick={() => {
+                router.push("/create-proposal");
+              }}
+            >
+              + New
+            </button>
+          )}
+        </div>
+        <ProposalsList />
+        <Footer />
       </div>
-      <ProposalsList />
     </div>
   );
 };
