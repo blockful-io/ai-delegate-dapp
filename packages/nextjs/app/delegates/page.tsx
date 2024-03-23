@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { AIsList } from "~~/components/AIsList";
+import { Footer } from "~~/components/Footer";
+import { Header, HeaderVariant } from "~~/components/Header";
 import { AI, getAIs } from "~~/services/ai";
 
 const AI_SKELETONS_NUMBER = 6;
@@ -47,11 +49,13 @@ const Delegate: NextPage = () => {
   }
 
   return (
-    <div className="w-full md:w-[70%] lg:w-[50%] mx-auto my-20">
-      <div>
-        <h1 className="my-5">Delegate to biased AI</h1>
+    <div className="w-full">
+      <Header variant={HeaderVariant.DEFAULT} />
+      <div className="w-full flex items-center flex-col ">
+        <h1 className="my-5 text-[#F6F9F6] w-full flex">Delegate to biased AI</h1>
+        <AIsList delegates={ais} />
       </div>
-      <AIsList delegates={ais} delegated={false} />
+      <Footer />
     </div>
   );
 };
