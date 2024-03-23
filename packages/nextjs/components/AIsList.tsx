@@ -1,13 +1,13 @@
+import DelegateButton from "./DelegateButton";
+import RevokeButton from "./RevokeButton";
 import { AI } from "~~/services/ai/getAIs";
 
 interface AIListProps {
   delegates: AI[];
   delegated: boolean;
-  onRevoke: (id: string) => void;
-  onDelegate: (id: string) => void;
 }
 
-export const AIsList = ({ delegates, onDelegate, delegated, onRevoke }: AIListProps) => {
+export const AIsList = ({ delegates, delegated }: AIListProps) => {
   return (
     <div className="w-full">
       <>
@@ -24,18 +24,10 @@ export const AIsList = ({ delegates, onDelegate, delegated, onRevoke }: AIListPr
                 </div>
               </div>
               <div className="w-full flex justify-between">
-                <a className="border bg-gray-200 text-black p-1 px-2" href={`/dele/${d.id}`}>
+                <a className="border bg-gray-200 text-black p-1 px-2" href={`/delegates/${d.id}`}>
                   See details
                 </a>
-                {delegated ? (
-                  <button onClick={() => onRevoke(d.id)} className="border bg-gray-200 text-black p-0.5 px-2">
-                    Revoke
-                  </button>
-                ) : (
-                  <button onClick={() => onDelegate(d.id)} className="border bg-gray-200 text-black p-0.5 px-2">
-                    Delegate
-                  </button>
-                )}
+                {delegated ? <RevokeButton id={d.id} /> : <DelegateButton id={d.id} />}
               </div>
             </div>
           );

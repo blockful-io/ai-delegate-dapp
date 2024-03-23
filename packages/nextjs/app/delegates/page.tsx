@@ -51,7 +51,7 @@ const Delegate: NextPage = () => {
       <div>
         <h1 className="my-5">Delegate to biased AI</h1>
       </div>
-      <AIsList delegates={ais} onDelegate={console.log} onRevoke={console.log} delegated={false} />
+      <AIsList delegates={ais} delegated={false} />
     </div>
   );
 };

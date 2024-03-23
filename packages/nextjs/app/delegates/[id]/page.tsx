@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import useDelegateVote from "~~/hooks/useDelegateVote";
+import DelegateButton from "~~/components/DelegateButton";
+import RevokeButton from "~~/components/RevokeButton";
 import { AI, getAI } from "~~/services/ai/getAIs";
 
 const AI_SKELETONS_NUMBER = 1;
@@ -15,7 +16,6 @@ export default function Page({ params }: Props) {
   const [ai, setAI] = useState<AI>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { delegateVote, isDelegated, revokeVote } = useDelegateVote();
 
   useEffect(() => {
     async function asyncGetAi() {
@@ -27,10 +27,6 @@ export default function Page({ params }: Props) {
       .then(() => setLoading(false))
       .catch(e => setError(String(e)));
   }, [params.id]);
-
-  useEffect(() => {
-    setLoading(delegateVote.isLoading || revokeVote.isLoading);
-  }, [delegateVote.isLoading, revokeVote.isLoading]);
 
   return (
     <div className="w-full md:w-[70%] lg:w-[50%] mx-auto my-20">
@@ -57,29 +53,8 @@ export default function Page({ params }: Props) {
               </div>
             </div>
             <div className="w-full flex justify-between">
-              {isDelegated ? (
-                <button
-                  onClick={() =>
-                    revokeVote.write({
-                      args: ai.id,
-                    })
-                  }
-                  className="border bg-gray-200 text-black p-0.5 px-2"
-                >
-                  Revoke
-                </button>
-              ) : (
-                <button
-                  onClick={() =>
-                    delegateVote.write({
-                      args: ai.id,
-                    })
-                  }
-                  className="border bg-gray-200 text-black p-0.5 px-2"
-                >
-                  Delegate
-                </button>
-              )}
+              {true ? <RevokeButton id={ai.id} /> : <DelegateButton id={ai.id} />}
+              {/* {isDelegated ? <RevokeButton id={ai.id} /> : <DelegateButton id={ai.id} />} */}
             </div>
           </div>
         </>
