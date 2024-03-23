@@ -2,9 +2,9 @@ import { createWalletClient, http, publicActions } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { hardhat } from "viem/chains";
 import { governorAbi } from "./abi";
-import { emptyCall, governorAddress, zeroEther } from "./utils";
+import { governorAddress } from "./utils";
 
-async function makeProposal(proposal: string) {
+async function castVote(proposalId: string, support: number, reason: string) {
   const account = privateKeyToAccount("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80");
 
   const client = createWalletClient({
@@ -16,14 +16,14 @@ async function makeProposal(proposal: string) {
   const { request } = await client.simulateContract({
     address: governorAddress,
     abi: governorAbi,
-    functionName: "propose",
-    args: [[governorAddress], [zeroEther], [emptyCall], proposal],
+    functionName: "castVoteWithReason",
+    args: [proposalId, support, reason],
   });
 
   await client.writeContract(request);
 }
 
-makeProposal("Von deploya contrato novo 3").catch(error => {
+castVote("62091374486432352214980294707617451072370000933239216834345190676086689989000", 1, "gostuei").catch(error => {
   console.error(error);
   process.exitCode = 1;
 });
