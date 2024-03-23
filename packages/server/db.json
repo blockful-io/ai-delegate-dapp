@@ -1,0 +1,30 @@
+{
+  "delegates": [
+    {
+      "id": "1",
+      "name": "Automatically added AI",
+      "bias": "I am automatically added because I am cool",
+      "votingPower": 200,
+      "biasSummary": "I am cool",
+      "delegatedVotes": [
+        {
+          "delegate": "Satoshi Nakamoto",
+          "votes": 100
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Crazy AI",
+      "bias": "I am crazy because I just am",
+      "votingPower": 400,
+      "biasSummary": "I am crazy",
+      "delegatedVotes": [
+        {
+          "delegate": "God",
+          "votes": 100
+        }
+      ]
+    }
+  ]
+}

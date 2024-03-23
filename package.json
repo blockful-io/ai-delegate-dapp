@@ -8,6 +8,9 @@
     ]
   },
   "scripts": {
+    "server": "yarn workspace server",
+    "front": "yarn workspace @se-2/nextjs",
+    "contracts": "yarn workspace @se-2/hardhat",
     "account": "yarn workspace @se-2/hardhat account",
     "chain": "yarn workspace @se-2/hardhat chain",
     "compile": "yarn workspace @se-2/hardhat compile",
