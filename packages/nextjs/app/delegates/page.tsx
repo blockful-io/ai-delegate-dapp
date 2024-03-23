@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { AIsList } from "~~/components/AIsList";
-import { AI, getAIs } from "~~/services/ai/getAIs";
+import { AI, getAIs } from "~~/services/ai";
 
 const AI_SKELETONS_NUMBER = 6;
 

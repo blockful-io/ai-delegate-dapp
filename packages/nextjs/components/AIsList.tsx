@@ -1,6 +1,6 @@
 import DelegateButton from "./DelegateButton";
 import RevokeButton from "./RevokeButton";
-import { AI } from "~~/services/ai/getAIs";
+import { AI } from "~~/services/ai";
 
 interface AIListProps {
   delegates: AI[];
