@@ -22,14 +22,14 @@ export const Footer = () => {
         </button>
         <button
           className="w-full gap-2 h-10 items-center flex justify-center text-[#F6F9F6]"
-          onClick={() => router.push("/delegate")}
+          onClick={() => router.push("/delegates")}
         >
           <ArrowIcon className="text-white" />
           Delegate
         </button>
         <button
           className="w-full gap-2 h-10 items-center flex justify-center  text-[#F6F9F6]"
-          onClick={() => router.push("/create-ia")}
+          onClick={() => router.push("/create-ai")}
         >
           <RobotIcon className="text-white" />
           AI Profile

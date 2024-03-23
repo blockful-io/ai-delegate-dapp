@@ -13,7 +13,7 @@ type Props = {
 };
 
 export default function Page({ params }: Props) {
-  const [ai, setAI] = useState<AI>();
+  const [ai, setAI] = useState<AI | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -59,8 +59,8 @@ export default function Page({ params }: Props) {
           </div>
         </div>
         <div className="w-full flex justify-between">
-          {true ? <RevokeButton id={ai.id} /> : <DelegateButton id={ai.id} />}
-          {/* {isDelegated ? <RevokeButton id={ai.id} /> : <DelegateButton id={ai.id} />} */}
+          {ai && true && <RevokeButton id={ai.id} />}
+          {ai && <DelegateButton id={ai.id} />}
         </div>
       </div>
     </div>
