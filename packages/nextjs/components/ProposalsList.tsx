@@ -1,15 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-import {
-  createPublicClient,
-  decodeFunctionResult,
-  encodeAbiParameters,
-  encodeFunctionData,
-  http,
-  parseAbiItem,
-} from "viem";
-import { localhost, mainnet } from "viem/chains";
-import deployedContracts from "~~/contracts/deployedContracts";
-import { Proposal, getProposals } from "~~/services/web3/getProposals";
+import { useEffect, useState } from "react";
+import useProposals, { Proposal } from "~~/hooks/useProposal";
 
 const PROPOSALS_SKELETONS_NUMBER = 6;
 
@@ -17,52 +7,15 @@ export const ProposalsList = () => {
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const publicClient = createPublicClient({
-    chain: localhost,
-    transport: http(),
-  });
-
-  const filterEvents = useCallback(async () => {
-    setLoading(true);
-    const contract = deployedContracts[31337].YourContract;
-
-    const events = await publicClient.getContractEvents({
-      abi: contract.abi,
-      address: contract.address,
-      eventName: "GreetingChange",
-    });
-
-    for (const ev of events.slice(0, 5)) {
-      const data = encodeFunctionData({
-        abi: contract.abi,
-        functionName: "greeting",
-      });
-
-      const response = await publicClient.call({
-        to: contract.address,
-        data,
-      });
-
-      console.log({ response });
-      if (response.data) {
-        const output = decodeFunctionResult({
-          abi: contract.abi,
-          functionName: "greeting",
-          data: response.data,
-        });
-
-        console.log({ output });
-      }
-    }
-
-    console.log({ events });
-  }, [publicClient]);
+  const { getLastProposals } = useProposals();
 
   useEffect(() => {
-    filterEvents()
-      .then(() => setLoading(false))
-      .catch(setError);
-  }, [filterEvents]);
+    setLoading(true);
+    getLastProposals()
+      .then(setProposals)
+      .catch(setError)
+      .finally(() => setLoading(false));
+  }, []);
 
   if (loading) {
     return (
