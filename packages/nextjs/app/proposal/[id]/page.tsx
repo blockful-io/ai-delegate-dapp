@@ -6,67 +6,6 @@
 import { useEffect, useState } from "react";
 import { Proposal, getProposal } from "~~/services/web3/getProposals";
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
 
 const AI_SKELETONS_NUMBER = 1;
 
@@ -91,7 +30,7 @@ export default function Page({ params, searchParams }: Props) {
     }
 
     setLoading(false);
-  }, []);
+  }, [params.id]);
 
   // TODO: fetch information of wether the connectedAddress has delegated votes to some loaded AI or not
   const delegateVotes = (proposal: Proposal) => {

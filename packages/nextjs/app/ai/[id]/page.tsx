@@ -6,12 +6,6 @@
 import { useEffect, useState } from "react";
 import { AI, getAI } from "~~/services/ai/getAIs";
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable prettier/prettier */
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 const AI_SKELETONS_NUMBER = 1;
 
 type Props = {
@@ -35,7 +29,7 @@ export default function Page({ params, searchParams }: Props) {
     }
 
     setLoading(false);
-  }, []);
+  }, [params.id]);
 
   // TODO: fetch information of wether the connectedAddress has delegated votes to some loaded AI or not
   const delegateVotes = (ai: AI) => {
