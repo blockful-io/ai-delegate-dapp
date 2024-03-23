@@ -26,7 +26,7 @@ export const Header = ({ variant }: Variant) => {
   ) : (
     <div className="top-0 bg-base-100 min-h-0 justify-between z-20  pb-5">
       <div className="flex justify-between w-full items-center">
-        <h1 className="my-5 text-[#F6F9F6]">New Proposals</h1>
+        <h1 className="my-5 text-[#F6F9F6]">New Proposal</h1>
         <button
           className="flex"
           onClick={() => {

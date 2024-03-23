@@ -41,7 +41,7 @@ export const FormCreateAI = () => {
       <div className="w-full flex flex-col">
         <div className="w-full flex justify-between items-center">
           <label htmlFor="summary" className="text-[#A0A1A5]">
-            Content
+            Prompt
           </label>
           <p className="text-[#A0A1A5]">{bias.length} / 250</p>
         </div>
