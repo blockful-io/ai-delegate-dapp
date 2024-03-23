@@ -14,7 +14,7 @@ const Home: NextPage = () => {
   return (
     <div className="w-full">
       <Header />
-      <div className="w-full flex items-center px-6 flex-col ">
+      <div className="w-full flex items-center flex-col ">
         <div className="flex justify-between w-full">
           <h1 className="my-5 text-[#F6F9F6]">Previous Proposals</h1>
           {connectedAddress && (
