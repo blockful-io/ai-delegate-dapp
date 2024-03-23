@@ -8,6 +8,7 @@ const SERVER_URL = "http://localhost:3000";
 
 export interface AI {
   id: string;
+  address: string;
   name: string;
   bias: string;
   votingPower: number;
@@ -30,13 +31,13 @@ const useDelegates = () => {
   });
 
   const fetchDelegates = useCallback(async (): Promise<AI[]> => {
-    const { data: ais } = await client.get("/delegates");
+    const { data: ais } = await client.get<AI[]>("/delegates");
     return ais;
   }, [client]);
 
   const fetchDelegate = useCallback(
     async ({ id }: Pick<AI, "id">): Promise<AI> => {
-      const { data: ai } = await client.get(`/delegates/${id}`);
+      const { data: ai } = await client.get<AI>(`/delegates/${id}`);
       return ai;
     },
     [client],
