@@ -81,7 +81,7 @@ export const CardDelegate = ({ params }: Props) => {
           </div>
           <div>
             <button
-              onClick={() => delegate({ id: ai.id })}
+              onClick={() => delegate({ address: ai.address })}
               className="bg-[#B1FF6F] text-[#17181C] rounded-[100px] text-sm font-normal px-3 py-2"
             >
               Delegate

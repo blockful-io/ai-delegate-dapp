@@ -32,7 +32,6 @@ const useDelegates = () => {
 
   const fetchDelegates = useCallback(async (): Promise<AI[]> => {
     const { data: ais } = await client.get<AI[]>("/delegates");
-    console.log({ ais });
     return ais;
   }, [client]);
 
@@ -69,16 +68,10 @@ const useDelegates = () => {
         functionName: "numCheckpoints",
         args: [address],
       });
-      const { data: response } = await publicClient.call({
+      await publicClient.call({
         to: contracts.NDCToken.address,
         data,
       });
-      const output = decodeFunctionResult({
-        abi: contracts.NDCToken.abi,
-        functionName: "numCheckpoints",
-        data: response!,
-      });
-      console.log({ output });
     },
     [contracts, publicClient],
   );
