@@ -1,7 +1,15 @@
 "use client";
 
 import { useCallback } from "react";
-import { createPublicClient, createWalletClient, custom, encodeFunctionData, http, publicActions } from "viem";
+import {
+  createPublicClient,
+  createWalletClient,
+  custom,
+  decodeFunctionResult,
+  encodeFunctionData,
+  http,
+  publicActions,
+} from "viem";
 import { auroraTestnet, sepolia } from "viem/chains";
 import { useAccount } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
@@ -51,7 +59,7 @@ const useProposals = () => {
   const contract = deployedContracts[publicClient.chain.id].NDCGovernor;
 
   const getLastProposals = useCallback(
-    async ({ limit = 4 }: { limit?: number } = {}): Promise<Proposal[]> => {
+    async ({ limit = 4 }: { limit?: number } = {}) => {
       const events = await publicClient.getContractEvents({
         abi: contract.abi,
         address: contract.address,
@@ -67,22 +75,33 @@ const useProposals = () => {
           return { id: proposalId, description };
         });
 
-      const statusCalldatas = proposals.map(proposal => ({
-        abi: contract.abi,
-        functionName: "state",
-        args: [proposal.id],
-        address: contract.address,
-      }));
+      const statusCalldatas = proposals.map(proposal =>
+        encodeFunctionData({
+          abi: contract.abi,
+          functionName: "state",
+          args: [proposal.id],
+        }),
+      );
 
-      const status = await walletClient.multicall({
-        contracts: statusCalldatas,
-      });
+      const status = await Promise.all(
+        statusCalldatas.map(async data => {
+          const r = await walletClient.call({
+            to: contract.address,
+            data,
+          });
+          return decodeFunctionResult({
+            abi: contract.abi,
+            functionName: "state",
+            data: r.data!,
+          });
+        }),
+      );
 
       return proposals.map((proposal, i): Proposal => {
         const [name, summary] = proposal.description.split("\n");
         return {
           id: proposal.id.toString(),
-          status: Status[status[i].result as number],
+          status: Status[status[i] as number],
           name,
           summary,
           proVotes: [],
