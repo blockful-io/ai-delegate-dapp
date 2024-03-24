@@ -1,6 +1,7 @@
 import { useRouter } from "next/navigation";
 import { HandIcon } from "./01-atoms/HandIcon";
 import { InfoIcon } from "./01-atoms/InfoIcon";
+import useDelegate from "~~/hooks/useDelegate";
 import { AI } from "~~/services/ai";
 
 interface AIListProps {
@@ -9,6 +10,8 @@ interface AIListProps {
 
 export const AIsList = ({ delegates }: AIListProps) => {
   const router = useRouter();
+  const { createDelegation } = useDelegate();
+
   return (
     <div className="w-full flex flex-col gap-3 md:justify-center md:items-center">
       <>
@@ -56,7 +59,10 @@ export const AIsList = ({ delegates }: AIListProps) => {
                   </button>
                 </div>
                 <div>
-                  <button className="bg-[#B1FF6F] text-[#17181C] rounded-[100px] text-sm font-normal px-3 py-2">
+                  <button
+                    className="bg-[#B1FF6F] text-[#17181C] rounded-[100px] text-sm font-normal px-3 py-2 "
+                    onClick={() => createDelegation()}
+                  >
                     Delegate
                   </button>
                 </div>
