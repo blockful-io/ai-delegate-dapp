@@ -1,4 +1,4 @@
-"use client";
+54"use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -23,7 +23,7 @@ export const CardCreatedProposal = ({ proposalId }: { proposalId: string }) => {
 
   return (
     <div className="w-full flex flex-col md:justify-center md:items-center gap-4">
-      <div className="border border-gray-300 p-4 text-white bg-[#F6F9F6] max-w-[382px] md:w-full min-h-[168px] rounded-xl">
+      <div className="border border-gray-300 p-4 text-white bg-[#F6F9F6] max-w-[382px] md:w-full min-h-[168px] rounded-xl overflow-auto">
         <div className="flex flex-col gap-3">
           <div className="text-[#17181C] font-medium text-[18px] flex">{name} </div>
           <div className="text-[#323439] font-normal text-[14px] flex">{summary}</div>
@@ -51,7 +51,7 @@ export const CardCreatedProposal = ({ proposalId }: { proposalId: string }) => {
             <div className="text-[#17181C] text-[18px] font-medium flex ">
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
-                  <div>name{name}</div>
+                  <div className="flex">{name.length < 10 ? name : name.slice(0, 10) + "..."}</div>
                   <div className="bg-[#0BDC841F] text-[#0BB76E] px-2 text-xs rounded-md ">YES</div>
                 </div>
                 <div className="text-[#595B5F] text-xs">3.738 votes - 17%</div>

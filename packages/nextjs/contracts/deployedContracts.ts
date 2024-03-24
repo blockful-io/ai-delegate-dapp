@@ -4885,7 +4885,7 @@ const deployedContracts = {
   },
   1313161555: {
     NDCGovernor: {
-      address: "0xd493b52E9b88E64cE8048C28aCfcEeE07aF86B38",
+      address: "0x61B16fED56534Ec01c31228E1AcB65b56cf3eD61",
       abi: [
         {
           inputs: [
@@ -6369,7 +6369,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     NDCToken: {
-      address: "0x1CdbD783Fede7C20A1d3D7d7901db93E91729fEB",
+      address: "0x71659658aa5656d94598F688dFC39bEd66B933b5",
       abi: [
         {
           inputs: [],

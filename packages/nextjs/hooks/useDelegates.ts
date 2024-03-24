@@ -21,8 +21,8 @@ export interface AI {
 
 const useDelegates = () => {
   const RPC_URL = "https://testnet.aurora.dev";
-  const SERVER_URL = "https://server-production-b8e7.up.railway.app/";
   // const RPC_URL = "https://eth-sepolia.g.alchemy.com/v2/bow93SW8hqPm2T1pRjzWcGdgueB-lvpb";
+  const SERVER_URL = "https://server-production-b8e7.up.railway.app/";
   // const SERVER_URL = "http://localhost:9000";
 
   const { address: wAddress } = useAccount();
@@ -43,6 +43,7 @@ const useDelegates = () => {
 
   const fetchDelegates = useCallback(async (): Promise<AI[]> => {
     const { data: ais } = await client.get<AI[]>("/delegates");
+    console.log({ ais });
     return ais.reverse().slice(0, 5);
   }, [client]);
 

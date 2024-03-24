@@ -1,6 +1,5 @@
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { HandIcon } from "./01-atoms/HandIcon";
-import { InfoIcon } from "./01-atoms/InfoIcon";
 import useDelegate from "~~/hooks/useDelegates";
 import { AI } from "~~/hooks/useDelegates";
 
@@ -9,8 +8,8 @@ interface AIListProps {
 }
 
 export const AIsList = ({ delegates }: AIListProps) => {
-  const router = useRouter();
   const { delegateVote } = useDelegate();
+  const [delegated, setDelegated] = useState(false);
 
   return (
     <div className="w-full flex flex-col gap-3 md:justify-center md:items-center">
@@ -19,19 +18,16 @@ export const AIsList = ({ delegates }: AIListProps) => {
           return (
             <div
               key={d.id}
-              className="border border-gray-300 p-4 text-white bg-[#F6F9F6] max-w-[382px] max-h-[168px] rounded-xl md:w-full"
+              className="border border-gray-300 p-4 text-white bg-[#F6F9F6] max-w-[382px] rounded-xl md:w-full"
             >
-              <div className="flex flex-col gap-4">
-                <div className="text-black flex">
-                  {d.name}
-                  {/* <AddressWalletIcon address={connectedAddress} /> */}
-                </div>
+              <div className="flex flex-col gap-4 mb-2">
+                <div className="text-black flex">{d.address.slice(0, 8)}</div>
               </div>
               <div className="flex justify-between gap-5">
                 <div className="flex justify-center items-center gap-2">
-                  <div className="w-9 h-9 border rounded-[100px] flex justify-center items-center bg-[#9192951F]">
+                  {/* <div className="w-9 h-9 border rounded-[100px] flex justify-center items-center bg-[#9192951F]">
                     <InfoIcon />
-                  </div>
+                  </div> */}
                   <div className="flex flex-col">
                     <div className="text-[#323439] text-sm font-medium leading-[16.80px]">{d.name}</div>
                     <div className="text-[#323439] text-sm">{d.summary}</div>
@@ -59,12 +55,18 @@ export const AIsList = ({ delegates }: AIListProps) => {
                   </button>
                 </div> */}
                 <div>
-                  <button
-                    className="bg-[#B1FF6F] text-[#17181C] rounded-[100px] text-sm font-normal px-3 py-2 "
-                    onClick={() => delegateVote({ address: d.address })}
-                  >
-                    Delegate
-                  </button>
+                  {delegated ? (
+                    <button disabled>Delegated</button>
+                  ) : (
+                    <button
+                      className="bg-[#B1FF6F] text-[#17181C] rounded-[100px] text-sm font-normal px-3 py-2 "
+                      onClick={() => {
+                        delegateVote({ address: d.address });
+                      }}
+                    >
+                      Delegate
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
