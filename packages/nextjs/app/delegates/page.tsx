@@ -13,15 +13,21 @@ const Delegate: NextPage = () => {
   const [ais, setAIs] = useState<AI[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { fetchDelegates } = useDelegates();
+  const { fetchDelegates, delegate } = useDelegates();
 
   useEffect(() => {
     setLoading(true);
     fetchDelegates()
       .then(setAIs)
-      .catch(setError)
+      .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
+
+  async function onDelegate(address: string) {
+    setLoading(true);
+    await delegate({ address });
+    setLoading(false);
+  }
 
   if (error) {
     return (
@@ -46,7 +52,7 @@ const Delegate: NextPage = () => {
       <Header variant={HeaderVariant.DEFAULT} />
       <div className="w-full flex items-center flex-col ">
         <h1 className="my-5 text-[#F6F9F6] w-full flex">Delegate to biased AI</h1>
-        <AIsList delegates={ais} />
+        <AIsList delegates={ais} onDelegate={onDelegate} />
       </div>
       <Footer />
     </div>

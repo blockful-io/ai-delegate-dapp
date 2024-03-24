@@ -1,16 +1,17 @@
 import { useCallback } from "react";
 import axios from "axios";
-import { createPublicClient, decodeFunctionResult, encodeFunctionData, http } from "viem";
-import { localhost } from "viem/chains";
+import { createPublicClient, createWalletClient, custom, decodeFunctionResult, encodeFunctionData, http } from "viem";
+import { sepolia } from "viem/chains";
+import { useAccount } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 
-const SERVER_URL = "http://localhost:3000";
+const SERVER_URL = "http://localhost:9000";
 
 export interface AI {
   id: string;
   address: string;
   name: string;
-  bias: string;
+  summary: string;
   votingPower: number;
   biasSummary: string;
   delegated: boolean;
@@ -21,17 +22,24 @@ export interface AI {
 }
 
 const useDelegates = () => {
+  // const { address } = useAccount();
+  // const walletClient = createWalletClient({
+  //   account: address,
+  //   chain: sepolia,
+  //   transport: custom(window.ethereum!),
+  // });
   const publicClient = createPublicClient({
-    chain: localhost,
+    chain: sepolia,
     transport: http(),
   });
-  const contract = deployedContracts[31337].YourContract;
+  const contracts = deployedContracts[publicClient.chain.id];
   const client = axios.create({
     baseURL: SERVER_URL,
   });
 
   const fetchDelegates = useCallback(async (): Promise<AI[]> => {
     const { data: ais } = await client.get<AI[]>("/delegates");
+    console.log({ ais });
     return ais;
   }, [client]);
 
@@ -44,7 +52,7 @@ const useDelegates = () => {
   );
 
   const createDelegate = useCallback(
-    async ({ name, bias }: Pick<AI, "name" | "bias">): Promise<AI> => {
+    async ({ name, summary: bias }: Pick<AI, "name" | "summary">): Promise<AI> => {
       const { data: ai } = await client.post("/delegates", {
         name,
         bias,
@@ -62,27 +70,24 @@ const useDelegates = () => {
   );
 
   const delegate = useCallback(
-    async ({ id }: Pick<AI, "id">) => {
+    async ({ address }: Pick<AI, "address">) => {
       const data = encodeFunctionData({
-        abi: contract.abi,
-        functionName: "greeting",
-        // args: id,
+        abi: contracts.NDCToken.abi,
+        functionName: "numCheckpoints",
+        args: [address],
       });
       const { data: response } = await publicClient.call({
-        to: contract.address,
+        to: contracts.NDCToken.address,
         data,
       });
-      if (!response) {
-        throw "unable to decode delegate response";
-      }
       const output = decodeFunctionResult({
-        abi: contract.abi,
-        functionName: "greeting",
-        data: response,
+        abi: contracts.NDCToken.abi,
+        functionName: "numCheckpoints",
+        data: response!,
       });
       console.log({ output });
     },
-    [contract, publicClient],
+    [contracts, publicClient],
   );
 
   return {
