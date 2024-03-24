@@ -1,7 +1,7 @@
 "use client";
 
 import { CardDelegate } from "~~/components/01-atoms/CardDelegate";
-import { Footer } from "~~/components/Footer";
+import { ActiveTab, Footer } from "~~/components/Footer";
 import { Header, HeaderVariant } from "~~/components/Header";
 
 type Props = {
@@ -16,7 +16,7 @@ export default function Page({ params }: Props) {
         <h1 className="my-5 text-[#F6F9F6] w-full flex">Delegate to biased AI</h1>
         <CardDelegate params={{ id: params.id }} />
       </div>
-      <Footer />
+      <Footer tab={ActiveTab.DELEGATE} />
     </div>
   );
 }

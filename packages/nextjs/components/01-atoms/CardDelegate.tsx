@@ -47,8 +47,8 @@ export const CardDelegate = ({ params }: Props) => {
     );
   }
   return (
-    <div className="w-full flex flex-col">
-      <div className=" border border-gray-300 p-4 text-white bg-[#F6F9F6] max-w-[382px] max-h-[168px] rounded-xl">
+    <div className="w-full flex flex-col md:justify-center md:items-center">
+      <div className=" border border-gray-300 p-4 text-white bg-[#F6F9F6] max-w-[382px] md:w-full max-h-[168px] rounded-xl">
         <div className="flex flex-col gap-4">
           <div className="text-black flex">
             <AddressWalletIcon address={connectedAddress} />

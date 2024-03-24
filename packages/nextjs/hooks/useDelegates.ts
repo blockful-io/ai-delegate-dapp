@@ -1,8 +1,7 @@
 import { useCallback } from "react";
 import axios from "axios";
-import { createPublicClient, createWalletClient, custom, decodeFunctionResult, encodeFunctionData, http } from "viem";
+import { createPublicClient, decodeFunctionResult, encodeFunctionData, http } from "viem";
 import { sepolia } from "viem/chains";
-import { useAccount } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 
 const SERVER_URL = "http://localhost:9000";
@@ -22,12 +21,6 @@ export interface AI {
 }
 
 const useDelegates = () => {
-  // const { address } = useAccount();
-  // const walletClient = createWalletClient({
-  //   account: address,
-  //   chain: sepolia,
-  //   transport: custom(window.ethereum!),
-  // });
   const publicClient = createPublicClient({
     chain: sepolia,
     transport: http(),

@@ -48,19 +48,20 @@ export const CardProposals = () => {
   }
 
   return (
-    <div className="w-full flex flex-col text-black gap-2">
+    <div className="w-full flex flex-col text-black md:justify-center md:items-center gap-3">
       <>
         {proposals.map(proposal => {
           return (
             <div
               key={proposal.id}
-              className="border border-gray-300 p-4 bg-[#F6F9F6] max-w-[382px]  rounded-xl text-black"
+              className="border border-gray-300 p-4 bg-[#F6F9F6] max-w-[382px] md:w-full rounded-xl text-black"
             >
               <div className="flex flex-col gap-4">
                 <div className="flex justify-between">
-                  <div className="flex gap-2 min-w-[150px] flex-col">
-                    <div className="text-[#A0A1A5] font-medium text-base">#{proposal.id.slice(0, 8)}</div>
-                    <div className="text-[#17181C] font-medium text-base flex">{proposal.name}</div>
+                  <div className="flex gap-2 min-w-[150px]">
+                    <div className="text-[#17181C] font-medium text-base flex">
+                      {proposal.name.length > 10 ? proposal.name.slice(0, 20) + "..." : proposal.name}
+                    </div>
                   </div>
                   <div
                     className={cc([

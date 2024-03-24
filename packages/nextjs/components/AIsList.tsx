@@ -12,13 +12,13 @@ export const AIsList = ({ delegates, onDelegate }: AIListProps) => {
   const router = useRouter();
 
   return (
-    <div className="w-full flex flex-col gap-3">
+    <div className="w-full flex flex-col gap-3 md:justify-center md:items-center">
       <>
         {delegates.map(d => {
           return (
             <div
               key={d.id}
-              className="border border-gray-300 p-4 text-white bg-[#F6F9F6] max-w-[382px] max-h-[168px] rounded-xl"
+              className="border border-gray-300 p-4 text-white bg-[#F6F9F6] max-w-[382px] max-h-[168px] rounded-xl md:w-full"
             >
               <div className="flex flex-col gap-4">
                 <div className="text-black flex">

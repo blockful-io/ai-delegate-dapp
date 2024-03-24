@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import type { NextPage } from "next";
 import { AIsList } from "~~/components/AIsList";
-import { Footer } from "~~/components/Footer";
+import { ActiveTab, Footer } from "~~/components/Footer";
 import { Header, HeaderVariant } from "~~/components/Header";
 import useDelegates, { AI } from "~~/hooks/useDelegates";
 
@@ -12,9 +13,9 @@ const AI_SKELETONS_NUMBER = 6;
 const Delegate: NextPage = () => {
   const [ais, setAIs] = useState<AI[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const { fetchDelegates, delegate } = useDelegates();
 
+  const router = useRouter();
   useEffect(() => {
     setLoading(true);
     fetchDelegates()
@@ -27,14 +28,6 @@ const Delegate: NextPage = () => {
     setLoading(true);
     await delegate({ address });
     setLoading(false);
-  }
-
-  if (error) {
-    return (
-      <div>
-        <h1>Error...</h1>
-      </div>
-    );
   }
 
   if (loading) {
@@ -51,10 +44,21 @@ const Delegate: NextPage = () => {
     <div className="w-full">
       <Header variant={HeaderVariant.DEFAULT} />
       <div className="w-full flex items-center flex-col ">
-        <h1 className="my-5 text-[#F6F9F6] w-full flex">Delegate to biased AI</h1>
+        <div className="flex w-full items-center">
+          <h1 className="my-5 text-[#F6F9F6] w-full flex md:justify-center">Delegate to biased AI</h1>
+          <button
+            className="border text-black bg-[#B1FF6F] rounded-[100px] px-4 w-[95px] h-10"
+            onClick={() => {
+              router.push("/create-ai");
+            }}
+          >
+            + New
+          </button>
+        </div>
+
         <AIsList delegates={ais} onDelegate={onDelegate} />
       </div>
-      <Footer />
+      <Footer tab={ActiveTab.DELEGATE} />
     </div>
   );
 };
