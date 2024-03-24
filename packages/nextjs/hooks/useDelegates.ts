@@ -1,6 +1,14 @@
 import { useCallback } from "react";
 import axios from "axios";
-import { createPublicClient, createWalletClient, custom, encodeFunctionData, http, publicActions } from "viem";
+import {
+  createPublicClient,
+  createWalletClient,
+  custom,
+  decodeFunctionResult,
+  encodeFunctionData,
+  http,
+  publicActions,
+} from "viem";
 import { sepolia } from "viem/chains";
 import { useAccount } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
@@ -40,10 +48,32 @@ const useDelegates = () => {
     baseURL: SERVER_URL,
   });
 
-  const fetchDelegates = useCallback(async (): Promise<AI[]> => {
+  const fetchDelegates = useCallback(async () => {
     const { data: ais } = await client.get<AI[]>("/delegates");
-    return ais.reverse().slice(0, 5);
-  }, [client]);
+    const delegates = ais.reverse().slice(0, 5);
+
+    return delegates.map(async d => {
+      const data = encodeFunctionData({
+        abi: contracts.NDCGovernor.abi,
+        functionName: "getVotes",
+        args: [d.address, 0n],
+      });
+      console.log({ data });
+      const r = await walletClient.call({
+        data,
+        to: contracts.NDCGovernor.address,
+      });
+      console.log({ r });
+
+      const votes = decodeFunctionResult({
+        abi: contracts.NDCGovernor.abi,
+        data: r.data!,
+        functionName: "getVotes",
+      });
+      console.log({ votes });
+      return { ...d, votingPower: votes };
+    });
+  }, [client, contracts.NDCGovernor.abi, contracts.NDCGovernor.address, walletClient]);
 
   const fetchDelegate = useCallback(
     async ({ id }: Pick<AI, "id">): Promise<AI> => {
