@@ -61,8 +61,17 @@ Run smart contract test with `yarn hardhat:test`
 - Edit your frontend in `packages/nextjs/pages`
 - Edit your deployment scripts in `packages/hardhat/deploy`
 
-# Aurora
+- Sepolia
 
-- Token: [0x71659658aa5656d94598F688dFC39bEd66B933b5](https://explorer.testnet.aurora.dev/address/0x71659658aa5656d94598F688dFC39bEd66B933b5)
-- governor: [0x61B16fED56534Ec01c31228E1AcB65b56cf3eD61](https://explorer.testnet.aurora.dev/address/0x61B16fED56534Ec01c31228E1AcB65b56cf3eD61)
-- RPC: [https://testnet.aurora.dev](https://testnet.aurora.dev/)
+  - [token: 0xcd99AA11b9aB73Bdd06c4dACB20C3616DA57f3B0](https://sepolia.etherscan.io/address/0xcd99AA11b9aB73Bdd06c4dACB20C3616DA57f3B0)
+  - [governor: 0xdCf5B18976cA5074b7702aAEf7b083E7c917ad4E](https://sepolia.etherscan.io/address/0xdCf5B18976cA5074b7702aAEf7b083E7c917ad4E)
+
+- Aurora Testnet
+
+  - token: [0x71659658aa5656d94598F688dFC39bEd66B933b5](https://explorer.testnet.aurora.dev/address/0x71659658aa5656d94598F688dFC39bEd66B933b5)
+  - governor: [0x61B16fED56534Ec01c31228E1AcB65b56cf3eD61](https://explorer.testnet.aurora.dev/address/0x61B16fED56534Ec01c31228E1AcB65b56cf3eD61)
+
+- Scroll Sepolia
+
+  - token: [0x71659658aa5656d94598F688dFC39bEd66B933b5](https://sepolia.scrollscan.com/address/0x71659658aa5656d94598F688dFC39bEd66B933b5)
+  - governor: [0x61B16fED56534Ec01c31228E1AcB65b56cf3eD61](https://sepolia.scrollscan.com/address/0x61B16fED56534Ec01c31228E1AcB65b56cf3eD61)
