@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 import { createPublicClient, createWalletClient, custom, encodeFunctionData, http, publicActions } from "viem";
-import { hardhat, sepolia } from "viem/chains";
+import { auroraTestnet, sepolia } from "viem/chains";
 import { useAccount } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 
@@ -34,9 +34,10 @@ export interface Vote {
 }
 
 const useProposals = () => {
-  const RPC = "https://eth-sepolia.g.alchemy.com/v2/bow93SW8hqPm2T1pRjzWcGdgueB-lvpb";
+  const RPC_URL = "https://eth-sepolia.g.alchemy.com/v2/bow93SW8hqPm2T1pRjzWcGdgueB-lvpb";
+
   const { address } = useAccount();
-  const transport = typeof window !== "undefined" && window.ethereum ? custom(window.ethereum) : http(RPC);
+  const transport = typeof window !== "undefined" && window.ethereum ? custom(window.ethereum) : http(RPC_URL);
   const walletClient = createWalletClient({
     account: address,
     chain: sepolia,
@@ -44,7 +45,7 @@ const useProposals = () => {
   }).extend(publicActions);
   const publicClient = createPublicClient({
     chain: sepolia,
-    transport: http(RPC),
+    transport: http(RPC_URL),
   });
   const contract = deployedContracts[publicClient.chain.id].NDCGovernor;
 

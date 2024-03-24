@@ -12,8 +12,8 @@ export const FormCreateAI = () => {
   const postAI = async () => {
     try {
       setLoading(true);
-      const ai = await createDelegate({ name, summary: bias });
-      router.push(`/delegates/${ai.id}`);
+      await createDelegate({ name, summary: bias });
+      router.replace("/delegates");
     } catch (err) {
       console.error(err);
     }

@@ -5,8 +5,6 @@ import { sepolia } from "viem/chains";
 import { useAccount } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 
-const SERVER_URL = "http://localhost:9000";
-
 export interface AI {
   id: string;
   address: string;
@@ -22,17 +20,20 @@ export interface AI {
 }
 
 const useDelegates = () => {
-  const RPC = "https://eth-sepolia.g.alchemy.com/v2/bow93SW8hqPm2T1pRjzWcGdgueB-lvpb";
-  const { address } = useAccount();
-  const transport = typeof window !== "undefined" && window.ethereum ? custom(window.ethereum) : http(RPC);
+  const RPC_URL = "https://eth-sepolia.g.alchemy.com/v2/bow93SW8hqPm2T1pRjzWcGdgueB-lvpb";
+  // const RPC_URL = "https://server-production-b8e7.up.railway.app/
+  const SERVER_URL = "http://localhost:9000";
+
+  const { address: wAddress } = useAccount();
+  const transport = typeof window !== "undefined" && window.ethereum ? custom(window.ethereum) : http(RPC_URL);
   const walletClient = createWalletClient({
-    account: address,
+    account: wAddress,
     chain: sepolia,
     transport,
   }).extend(publicActions);
   const publicClient = createPublicClient({
     chain: sepolia,
-    transport: http(),
+    transport: http(RPC_URL),
   });
   const contracts = deployedContracts[publicClient.chain.id];
   const client = axios.create({
@@ -41,7 +42,7 @@ const useDelegates = () => {
 
   const fetchDelegates = useCallback(async (): Promise<AI[]> => {
     const { data: ais } = await client.get<AI[]>("/delegates");
-    return ais;
+    return ais.reverse().slice(0, 5);
   }, [client]);
 
   const fetchDelegate = useCallback(
@@ -53,12 +54,11 @@ const useDelegates = () => {
   );
 
   const createDelegate = useCallback(
-    async ({ name, summary: bias }: Pick<AI, "name" | "summary">): Promise<AI> => {
-      const { data: ai } = await client.post("/delegates", {
+    async ({ name, summary: bias }: Pick<AI, "name" | "summary">): Promise<void> => {
+      await client.post("/delegates", {
         name,
         message: bias,
       });
-      return ai;
     },
     [client],
   );
@@ -81,10 +81,10 @@ const useDelegates = () => {
       await walletClient.sendTransaction({
         to: contracts.NDCToken.address,
         data,
-        account: address,
+        account: wAddress!,
       });
     },
-    [walletClient, contracts],
+    [walletClient, contracts, wAddress],
   );
 
   return {

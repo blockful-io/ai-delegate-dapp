@@ -6,7 +6,6 @@ import { AI } from "~~/hooks/useDelegates";
 
 interface AIListProps {
   delegates: AI[];
-  onDelegate: (address: string) => Promise<void>;
 }
 
 export const AIsList = ({ delegates }: AIListProps) => {
@@ -17,7 +16,6 @@ export const AIsList = ({ delegates }: AIListProps) => {
     <div className="w-full flex flex-col gap-3 md:justify-center md:items-center">
       <>
         {delegates.map(d => {
-          console.log({ d });
           return (
             <div
               key={d.id}
@@ -51,15 +49,15 @@ export const AIsList = ({ delegates }: AIListProps) => {
                 </div>
               </div>
 
-              <div className="text-black flex pt-4 justify-between">
-                <div className="gap-2 flex ">
+              <div className="text-black flex pt-4 justify-end">
+                {/* <div className="gap-2 flex ">
                   <button
                     className="px-3 py-2 bg-[#9192951F] text-sm rounded-[100px]"
                     onClick={() => router.push(`/delegates/${d.id}`)}
                   >
                     See details
                   </button>
-                </div>
+                </div> */}
                 <div>
                   <button
                     className="bg-[#B1FF6F] text-[#17181C] rounded-[100px] text-sm font-normal px-3 py-2 "
