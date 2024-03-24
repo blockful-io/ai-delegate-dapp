@@ -6,7 +6,7 @@ async function makeDelegation(delegatee: string) {
     address: tokenAddress,
     abi: tokenAbi,
     functionName: "delegate",
-    args: [delegatee],
+    args: [delegatee as `0x${string}`],
   });
 
   await client.writeContract(request);

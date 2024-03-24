@@ -1,7 +1,8 @@
 import { useCallback } from "react";
 import axios from "axios";
-import { createPublicClient, decodeFunctionResult, encodeFunctionData, http } from "viem";
+import { createPublicClient, createWalletClient, custom, encodeFunctionData, http, publicActions } from "viem";
 import { sepolia } from "viem/chains";
+import { useAccount } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 
 const SERVER_URL = "http://localhost:9000";
@@ -21,6 +22,14 @@ export interface AI {
 }
 
 const useDelegates = () => {
+  const RPC = "https://eth-sepolia.g.alchemy.com/v2/bow93SW8hqPm2T1pRjzWcGdgueB-lvpb";
+  const { address } = useAccount();
+  const transport = typeof window !== "undefined" && window.ethereum ? custom(window.ethereum) : http(RPC);
+  const walletClient = createWalletClient({
+    account: address,
+    chain: sepolia,
+    transport,
+  }).extend(publicActions);
   const publicClient = createPublicClient({
     chain: sepolia,
     transport: http(),
@@ -43,17 +52,6 @@ const useDelegates = () => {
     [client],
   );
 
-  const createDelegate = useCallback(
-    async ({ name, summary: bias }: Pick<AI, "name" | "summary">): Promise<AI> => {
-      const { data: ai } = await client.post("/delegates", {
-        name,
-        bias,
-      });
-      return ai;
-    },
-    [client],
-  );
-
   const deleteAI = useCallback(
     async ({ id }: Pick<AI, "id">): Promise<void> => {
       await client.delete(`/delegates/${id}`);
@@ -61,27 +59,28 @@ const useDelegates = () => {
     [client],
   );
 
-  const delegate = useCallback(
+  const createDelegate = useCallback(
     async ({ address }: Pick<AI, "address">) => {
       const data = encodeFunctionData({
         abi: contracts.NDCToken.abi,
-        functionName: "numCheckpoints",
+        functionName: "delegate",
         args: [address],
       });
-      await publicClient.call({
+
+      await walletClient.sendTransaction({
         to: contracts.NDCToken.address,
         data,
+        account: address,
       });
     },
-    [contracts, publicClient],
+    [walletClient, contracts],
   );
 
   return {
     fetchDelegates,
     fetchDelegate,
-    createDelegate,
     deleteAI,
-    delegate,
+    createDelegate,
   };
 };
 

@@ -13,7 +13,7 @@ const AI_SKELETONS_NUMBER = 6;
 const Delegate: NextPage = () => {
   const [ais, setAIs] = useState<AI[]>([]);
   const [loading, setLoading] = useState(true);
-  const { fetchDelegates, delegate } = useDelegates();
+  const { fetchDelegates, createDelegate } = useDelegates();
 
   const router = useRouter();
   useEffect(() => {
@@ -26,7 +26,7 @@ const Delegate: NextPage = () => {
 
   async function onDelegate(address: string) {
     setLoading(true);
-    await delegate({ address });
+    await createDelegate({ address });
     setLoading(false);
   }
 
