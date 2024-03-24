@@ -1,23 +1,12 @@
-import { createWalletClient, http, publicActions } from "viem";
-import { privateKeyToAccount } from "viem/accounts";
-import { mainnet } from "viem/chains";
 import { governorAbi } from "./abi";
-import { governorAddress } from "./utils";
+import { client, governorAddress } from "./utils";
 
 async function main() {
-  const account = privateKeyToAccount("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80");
-  const client = createWalletClient({
-    account,
-    chain: mainnet,
-    transport: http("http://127.0.0.1:8545/"),
-  }).extend(publicActions);
-
   const events = await client.getContractEvents({
     abi: governorAbi,
     address: governorAddress,
     eventName: "ProposalCreated",
-    fromBlock: "earliest",
-    toBlock: "latest",
+    fromBlock: 5546368n,
   });
 
   const proposals = events.map(events => {
@@ -25,13 +14,32 @@ async function main() {
     return { id: proposalId, description };
   });
 
-  const state = await client.readContract({
-    abi: governorAbi,
+  const governorContract = {
     address: governorAddress,
-    functionName: "state",
-    args: [proposals[0].id],
+    abi: governorAbi,
+  } as const;
+
+  const statusCalldata = proposals.map(proposal => {
+    return {
+      ...governorContract,
+      functionName: "state",
+      args: [proposal.id],
+    };
   });
 
+  const status = await client.multicall({
+    contracts: statusCalldata,
+  });
+
+  const proposalOverview = proposals.map((proposal, i) => {
+    return {
+      status: status[i].result,
+      description: proposal.description,
+      id: proposal.id,
+    };
+  });
+
+  console.log(proposalOverview);
   return proposals;
 }
 
