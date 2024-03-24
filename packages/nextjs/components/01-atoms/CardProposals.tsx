@@ -23,7 +23,7 @@ export const CardProposals = () => {
     setLoading(true);
     getLastProposals()
       .then(setProposals)
-      .catch(setError)
+      .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
 
@@ -40,7 +40,7 @@ export const CardProposals = () => {
   if (error) {
     return (
       <div>
-        <h1>Error: {error}</h1>
+        <h1>Error...</h1>
       </div>
     );
   }

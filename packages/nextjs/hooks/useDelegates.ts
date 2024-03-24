@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import axios from "axios";
 import { createPublicClient, createWalletClient, custom, encodeFunctionData, http, publicActions } from "viem";
-import { sepolia } from "viem/chains";
+import { auroraTestnet, sepolia } from "viem/chains";
 import { useAccount } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 
@@ -20,19 +20,20 @@ export interface AI {
 }
 
 const useDelegates = () => {
-  const RPC_URL = "https://eth-sepolia.g.alchemy.com/v2/bow93SW8hqPm2T1pRjzWcGdgueB-lvpb";
-  // const RPC_URL = "https://server-production-b8e7.up.railway.app/
-  const SERVER_URL = "http://localhost:9000";
+  const RPC_URL = "https://testnet.aurora.dev";
+  const SERVER_URL = "https://server-production-b8e7.up.railway.app/";
+  // const RPC_URL = "https://eth-sepolia.g.alchemy.com/v2/bow93SW8hqPm2T1pRjzWcGdgueB-lvpb";
+  // const SERVER_URL = "http://localhost:9000";
 
   const { address: wAddress } = useAccount();
   const transport = typeof window !== "undefined" && window.ethereum ? custom(window.ethereum) : http(RPC_URL);
   const walletClient = createWalletClient({
     account: wAddress,
-    chain: sepolia,
+    chain: auroraTestnet,
     transport,
   }).extend(publicActions);
   const publicClient = createPublicClient({
-    chain: sepolia,
+    chain: auroraTestnet,
     transport: http(RPC_URL),
   });
   const contracts = deployedContracts[publicClient.chain.id];
