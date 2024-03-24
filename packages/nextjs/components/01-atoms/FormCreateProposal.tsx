@@ -1,38 +1,28 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import useProposals from "~~/hooks/useProposal";
 
 export const FormCreateProposal = () => {
   const [name, setName] = useState("");
   const [summary, setSummary] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { createProposal } = useProposals();
   const router = useRouter();
+  const proposalID = 0x1;
+  window.localStorage.setItem(`${proposalID}-name`, name);
+  window.localStorage.setItem(`${proposalID}-summary`, summary);
 
-  const postCreateProposal = e => {
+  router.push(`/proposals/created?id=${proposalID}`);
+  async function onSubmit(e) {
     e.preventDefault();
-    const proposalID = "0x1";
+    setLoading(true);
+    await createProposal({ name: summary });
+    setLoading(false);
+    router.back();
+  }
 
-    // TODO: post the new AI to the server
-    // const response = fetch("https://api.example.com/ai", {
-    //   method: "POST",x
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     name,
-    //     summary,
-    //   }),
-    // });
-    // .then(router.push(createdProposal ))
-    // return <CreatedProposalSuccess/>
-
-    window.localStorage.setItem(`${proposalID}-name`, name);
-    window.localStorage.setItem(`${proposalID}-summary`, summary);
-
-    router.push(`/proposals/created?id=${proposalID}`);
-
-    // alert(`Implement AI creation POST request: ${name}`);
-  };
   return (
-    <form className="flex flex-col gap-4 w-full" onSubmit={postCreateProposal}>
+    <form className="flex flex-col gap-4 w-full" onSubmit={onSubmit}>
       <div className="flex flex-col">
         <div className="w-full flex justify-between items-center">
           <label htmlFor="name" className="text-[#A0A1A5]">
@@ -76,12 +66,18 @@ export const FormCreateProposal = () => {
           cols={30}
           rows={10}
           maxLength={250}
-        />
-        <input
-          className="border bg-[#B1FF6F] rounded-[100px] border-gray-300 py-4 max-h-[54px] items-center flex justify-center"
-          type="submit"
-          value="Submit"
-        />
+        ></textarea>
+        {loading ? (
+          <span className="border bg-[#B1FF6F] rounded-[100px] border-gray-300 py-4 max-h-[54px] items-center flex justify-center">
+            Loading...
+          </span>
+        ) : (
+          <input
+            className="border bg-[#B1FF6F] rounded-[100px] border-gray-300 py-4 max-h-[54px] items-center flex justify-center"
+            type="submit"
+            value="Submit"
+          />
+        )}
       </div>
     </form>
   );
