@@ -1,17 +1,28 @@
 "use client";
 
 import { useCallback } from "react";
-import { createPublicClient, createWalletClient, custom, encodeFunctionData, http } from "viem";
+import { createPublicClient, createWalletClient, custom, encodeFunctionData, http, publicActions } from "viem";
 import { hardhat, sepolia } from "viem/chains";
 import { useAccount } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
+
+enum Status {
+  Pending = 0,
+  Active,
+  Canceled,
+  Defeated,
+  Succeeded,
+  Queued,
+  Expired,
+  Executed,
+}
 
 export interface Proposal {
   id: string;
   name: string;
   txHash?: string;
   summary: string;
-  status: "Executed" | "Queued" | "Defeated" | "Succeeded" | "Active";
+  status: string;
   proVotes: Vote[];
   conVotes: Vote[];
 }
@@ -28,7 +39,7 @@ const useProposals = () => {
     account: address,
     chain: sepolia,
     transport: custom(window.ethereum!),
-  });
+  }).extend(publicActions);
   const publicClient = createPublicClient({
     chain: sepolia,
     // transport: http(),
@@ -46,19 +57,38 @@ const useProposals = () => {
       });
 
       console.log({ events });
-      return events
+      const proposals = events
         .reverse()
         .slice(0, limit)
-        .map(({ args }) => ({
-          id: args.proposalId!.toString(),
+        .map(events => {
+          const { proposalId, description } = (events as any).args;
+          return { id: proposalId, description };
+        });
+
+      const statusCalldatas = proposals.map(proposal => ({
+        abi: contract.abi,
+        functionName: "state",
+        args: [proposal.id],
+        address: contract.address,
+      }));
+
+      const status = await walletClient.multicall({
+        contracts: statusCalldatas,
+      });
+
+      return proposals.map((proposal, i): Proposal => {
+        const [name, summary] = proposal.description.split("\n");
+        return {
+          id: proposal.id.toString(),
+          status: Status[status[i].result as number],
+          name,
+          summary,
           proVotes: [],
           conVotes: [],
-          name: args.description!,
-          summary: args.description!,
-          status: "Defeated",
-        }));
+        };
+      });
     },
-    [publicClient, contract],
+    [publicClient, contract, walletClient],
   );
 
   const createProposal = useCallback(
