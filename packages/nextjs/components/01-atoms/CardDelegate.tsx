@@ -16,7 +16,7 @@ export const CardDelegate = ({ params }: Props) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { address: connectedAddress } = useAccount();
-  const { fetchDelegate, delegate } = useDelegates();
+  const { fetchDelegate, delegateVote } = useDelegates();
 
   const AI_SKELETONS_NUMBER = 1;
 
@@ -81,7 +81,7 @@ export const CardDelegate = ({ params }: Props) => {
           </div>
           <div>
             <button
-              onClick={() => delegate({ address: ai.address })}
+              onClick={() => delegateVote({ address: ai.address })}
               className="bg-[#B1FF6F] text-[#17181C] rounded-[100px] text-sm font-normal px-3 py-2"
             >
               Delegate

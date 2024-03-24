@@ -25,8 +25,9 @@ const Delegate: NextPage = () => {
   }, []);
 
   async function onDelegate(address: string) {
+    console.log("", address);
     setLoading(true);
-    await createDelegate({ address });
+    await createDelegate({ name: "name", summary: "summary" });
     setLoading(false);
   }
 

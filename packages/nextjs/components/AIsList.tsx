@@ -11,12 +11,13 @@ interface AIListProps {
 
 export const AIsList = ({ delegates }: AIListProps) => {
   const router = useRouter();
-  const { createDelegate } = useDelegate();
+  const { delegateVote } = useDelegate();
 
   return (
     <div className="w-full flex flex-col gap-3 md:justify-center md:items-center">
       <>
         {delegates.map(d => {
+          console.log({ d });
           return (
             <div
               key={d.id}
@@ -62,7 +63,7 @@ export const AIsList = ({ delegates }: AIListProps) => {
                 <div>
                   <button
                     className="bg-[#B1FF6F] text-[#17181C] rounded-[100px] text-sm font-normal px-3 py-2 "
-                    onClick={() => createDelegate({ address: d.address })}
+                    onClick={() => delegateVote({ address: d.address })}
                   >
                     Delegate
                   </button>

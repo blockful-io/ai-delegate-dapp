@@ -52,6 +52,17 @@ const useDelegates = () => {
     [client],
   );
 
+  const createDelegate = useCallback(
+    async ({ name, summary: bias }: Pick<AI, "name" | "summary">): Promise<AI> => {
+      const { data: ai } = await client.post("/delegates", {
+        name,
+        message: bias,
+      });
+      return ai;
+    },
+    [client],
+  );
+
   const deleteAI = useCallback(
     async ({ id }: Pick<AI, "id">): Promise<void> => {
       await client.delete(`/delegates/${id}`);
@@ -59,7 +70,7 @@ const useDelegates = () => {
     [client],
   );
 
-  const createDelegate = useCallback(
+  const delegateVote = useCallback(
     async ({ address }: Pick<AI, "address">) => {
       const data = encodeFunctionData({
         abi: contracts.NDCToken.abi,
@@ -79,8 +90,9 @@ const useDelegates = () => {
   return {
     fetchDelegates,
     fetchDelegate,
-    deleteAI,
     createDelegate,
+    deleteAI,
+    delegateVote,
   };
 };
 
