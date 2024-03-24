@@ -48,13 +48,13 @@ export const CardProposals = () => {
   }
 
   return (
-    <div className="w-full flex flex-col text-black">
+    <div className="w-full flex flex-col text-black md:justify-center md:items-center">
       <>
         {proposals.map(proposal => {
           return (
             <div
               key={proposal.id}
-              className="border border-gray-300 p-4 bg-[#F6F9F6] max-w-[382px]  rounded-xl text-black"
+              className="border border-gray-300 p-4 bg-[#F6F9F6] max-w-[382px] md:w-full rounded-xl text-black"
             >
               <div className="flex flex-col gap-4">
                 <div className="flex justify-between">

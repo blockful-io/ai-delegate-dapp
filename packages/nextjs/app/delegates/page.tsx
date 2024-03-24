@@ -52,7 +52,7 @@ const Delegate: NextPage = () => {
     <div className="w-full">
       <Header variant={HeaderVariant.DEFAULT} />
       <div className="w-full flex items-center flex-col ">
-        <h1 className="my-5 text-[#F6F9F6] w-full flex">Delegate to biased AI</h1>
+        <h1 className="my-5 text-[#F6F9F6] w-full flex md:justify-center">Delegate to biased AI</h1>
         <AIsList delegates={ais} />
       </div>
       <Footer />
