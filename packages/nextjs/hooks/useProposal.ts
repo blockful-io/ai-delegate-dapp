@@ -1,6 +1,9 @@
+"use client";
+
 import { useCallback } from "react";
-import { createPublicClient, encodeFunctionData, http } from "viem";
-import { localhost } from "viem/chains";
+import { createPublicClient, createWalletClient, custom, encodeFunctionData, http } from "viem";
+import { hardhat, sepolia } from "viem/chains";
+import { useAccount } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 
 export interface Proposal {
@@ -8,7 +11,7 @@ export interface Proposal {
   name: string;
   txHash?: string;
   summary: string;
-  status: "Executed" | "Queued" | "Defeated" | "Succeeded";
+  status: "Executed" | "Queued" | "Defeated" | "Succeeded" | "Active";
   proVotes: Vote[];
   conVotes: Vote[];
 }
@@ -20,75 +23,66 @@ export interface Vote {
 }
 
 const useProposals = () => {
-  const publicClient = createPublicClient({
-    chain: localhost,
-    transport: http(),
+  const { address } = useAccount();
+  const walletClient = createWalletClient({
+    account: address,
+    chain: sepolia,
+    transport: custom(window.ethereum!),
   });
-  const contract = deployedContracts[31337].YourContract;
+  const publicClient = createPublicClient({
+    chain: sepolia,
+    // transport: http(),
+    transport: http("https://eth-sepolia.g.alchemy.com/v2/bow93SW8hqPm2T1pRjzWcGdgueB-lvpb"),
+  });
+  const contract = deployedContracts[publicClient.chain.id].NDCGovernor;
 
-  const getLastProposals = useCallback(async (): Promise<Proposal[]> => {
-    const events = await publicClient.getContractEvents({
-      abi: contract.abi,
-      address: contract.address,
-      eventName: "GreetingChange",
-    });
-
-    console.log({ events });
-    return events.map(ev => ({
-      id: "1",
-      name: ev.args.newGreeting!,
-      summary: "b",
-      proVotes: [],
-      conVotes: [],
-      status: "Queued",
-    }));
-  }, [publicClient, contract]);
-
-  const getProposal = useCallback(
-    async ({ id }: Pick<Proposal, "id">): Promise<Proposal> => {
-      const event = await publicClient.getContractEvents({
+  const getLastProposals = useCallback(
+    async ({ limit = 4 }: { limit?: number } = {}): Promise<Proposal[]> => {
+      const events = await publicClient.getContractEvents({
         abi: contract.abi,
         address: contract.address,
-        eventName: "GreetingChange",
-        args: { greetingSetter: id },
+        eventName: "ProposalCreated",
+        fromBlock: 0n,
       });
 
-      if (event.length == 0) {
-        throw "proposal not found";
-      }
-
-      const args = event[0].args;
-
-      return {
-        id: "1",
-        name: args.greetingSetter!,
-        summary: "b",
-        proVotes: [],
-        conVotes: [],
-        status: "Queued",
-      };
+      console.log({ events });
+      return events
+        .reverse()
+        .slice(0, limit)
+        .map(({ args }) => ({
+          id: args.proposalId!.toString(),
+          proVotes: [],
+          conVotes: [],
+          name: args.description!,
+          summary: args.description!,
+          status: "Defeated",
+        }));
     },
     [publicClient, contract],
   );
 
   const createProposal = useCallback(
-    async ({ name }: Pick<Proposal, "name" | "summary">): Promise<void> => {
+    async ({ name }: Pick<Proposal, "name">): Promise<void> => {
       const data = encodeFunctionData({
         abi: contract.abi,
-        functionName: "setGreeting",
-        args: [name],
+        functionName: "propose",
+        args: [[contract.address], [0n], ["0x"], name],
       });
 
-      const response = await publicClient.call({
+      if (!address) {
+        return;
+      }
+
+      await walletClient.sendTransaction({
         to: contract.address,
         data,
+        account: address,
       });
-      console.log({ response });
     },
-    [publicClient, contract],
+    [walletClient, contract, address],
   );
 
-  return { getLastProposals, getProposal, createProposal };
+  return { getLastProposals, createProposal };
 };
 
 export default useProposals;

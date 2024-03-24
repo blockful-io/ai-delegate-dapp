@@ -26,7 +26,7 @@ export const AIsList = ({ delegates }: AIListProps) => {
           return (
             <div
               key={d.id}
-              className=" border border-gray-300 p-4 text-white bg-[#F6F9F6] max-w-[382px] max-h-[168px] rounded-xl"
+              className="border border-gray-300 p-4 text-white bg-[#F6F9F6] max-w-[382px] max-h-[168px] rounded-xl"
             >
               <div className="flex flex-col gap-4">
                 <div className="text-black flex">
@@ -64,7 +64,6 @@ export const AIsList = ({ delegates }: AIListProps) => {
                   >
                     See details
                   </button>
-                  <button className="px-3 py-2 bg-[#9192951F] text-sm rounded-[100px]">See txn</button>
                 </div>
                 <div>
                   {loading ? (

@@ -1,25 +1,24 @@
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import useProposals from "~~/hooks/useProposal";
 
 export const FormCreateProposal = () => {
   const [name, setName] = useState("");
   const [summary, setSummary] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { createProposal } = useProposals();
+  const router = useRouter();
 
-  const postCreateProposal = () => {
-    // TODO: post the new AI to the server
-    // const response = fetch("https://api.example.com/ai", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     name,
-    //     summary,
-    //   }),
-    // });
-    alert(`Implement AI creation POST request: ${name}`);
-  };
+  async function onSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+    await createProposal({ name: summary });
+    setLoading(false);
+    router.back();
+  }
+
   return (
-    <form className="flex flex-col gap-4 w-full" onSubmit={postCreateProposal}>
+    <form className="flex flex-col gap-4 w-full" onSubmit={onSubmit}>
       <div className="flex flex-col">
         <label htmlFor="name" className="mb-4 text-[#A0A1A5]">
           Title
@@ -50,12 +49,17 @@ export const FormCreateProposal = () => {
           cols={30}
           rows={10}
         ></textarea>
-        <input
-          className="border bg-[#B1FF6F] rounded-[100px] border-gray-300 py-4 max-h-[54px] items-center flex justify-center"
-          onSubmit={postCreateProposal}
-          type="submit"
-          value="Submit"
-        />
+        {loading ? (
+          <span className="border bg-[#B1FF6F] rounded-[100px] border-gray-300 py-4 max-h-[54px] items-center flex justify-center">
+            Loading...
+          </span>
+        ) : (
+          <input
+            className="border bg-[#B1FF6F] rounded-[100px] border-gray-300 py-4 max-h-[54px] items-center flex justify-center"
+            type="submit"
+            value="Submit"
+          />
+        )}
       </div>
     </form>
   );

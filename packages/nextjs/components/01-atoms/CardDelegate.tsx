@@ -78,7 +78,6 @@ export const CardDelegate = ({ params }: Props) => {
         <div className="text-black flex pt-4 justify-between">
           <div className="gap-2 flex ">
             <button className="px-3 py-2 bg-[#9192951F] text-sm rounded-[100px]">See details</button>
-            <button className="px-3 py-2 bg-[#9192951F] text-sm rounded-[100px]">See txn</button>
           </div>
           <div>
             <button
