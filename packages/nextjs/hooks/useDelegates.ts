@@ -53,24 +53,26 @@ const useDelegates = () => {
     const { data: ais } = await client.get<AI[]>("/delegates");
     const delegates = ais.reverse().slice(0, 5);
 
-    return delegates.map(async d => {
-      const data = encodeFunctionData({
-        abi: contracts.NDCGovernor.abi,
-        functionName: "getVotes",
-        args: [d.address, 0n],
-      });
-      const r = await walletClient.call({
-        data,
-        to: contracts.NDCGovernor.address,
-      });
+    return await Promise.all(
+      delegates.map(async d => {
+        const data = encodeFunctionData({
+          abi: contracts.NDCGovernor.abi,
+          functionName: "getVotes",
+          args: [d.address, 0n],
+        });
+        const r = await walletClient.call({
+          data,
+          to: contracts.NDCGovernor.address,
+        });
 
-      const votes = decodeFunctionResult({
-        abi: contracts.NDCGovernor.abi,
-        data: r.data!,
-        functionName: "getVotes",
-      });
-      return { ...d, votingPower: votes };
-    });
+        const votes = decodeFunctionResult({
+          abi: contracts.NDCGovernor.abi,
+          data: r.data!,
+          functionName: "getVotes",
+        });
+        return { ...d, votingPower: votes };
+      }),
+    );
   }, [client, contracts.NDCGovernor.abi, contracts.NDCGovernor.address, walletClient]);
 
   const fetchDelegate = useCallback(
