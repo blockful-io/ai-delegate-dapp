@@ -9,7 +9,7 @@ import {
   http,
   publicActions,
 } from "viem";
-import { sepolia } from "viem/chains";
+import { auroraTestnet, sepolia } from "viem/chains";
 import { useAccount } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 
@@ -28,19 +28,20 @@ export interface AI {
 }
 
 const useDelegates = () => {
-  const RPC_URL = "https://eth-sepolia.g.alchemy.com/v2/bow93SW8hqPm2T1pRjzWcGdgueB-lvpb";
-  // const RPC_URL = "https://server-production-b8e7.up.railway.app/
-  const SERVER_URL = "http://localhost:9000";
+  const RPC_URL = "https://testnet.aurora.dev";
+  // const RPC_URL = "https://eth-sepolia.g.alchemy.com/v2/bow93SW8hqPm2T1pRjzWcGdgueB-lvpb";
+  const SERVER_URL = "https://server-production-b8e7.up.railway.app/";
+  // const SERVER_URL = "http://localhost:9000";
 
   const { address: wAddress } = useAccount();
   const transport = typeof window !== "undefined" && window.ethereum ? custom(window.ethereum) : http(RPC_URL);
   const walletClient = createWalletClient({
     account: wAddress,
-    chain: sepolia,
+    chain: auroraTestnet,
     transport,
   }).extend(publicActions);
   const publicClient = createPublicClient({
-    chain: sepolia,
+    chain: auroraTestnet,
     transport: http(RPC_URL),
   });
   const contracts = deployedContracts[publicClient.chain.id];
@@ -58,19 +59,16 @@ const useDelegates = () => {
         functionName: "getVotes",
         args: [d.address, 0n],
       });
-      console.log({ data });
       const r = await walletClient.call({
         data,
         to: contracts.NDCGovernor.address,
       });
-      console.log({ r });
 
       const votes = decodeFunctionResult({
         abi: contracts.NDCGovernor.abi,
         data: r.data!,
         functionName: "getVotes",
       });
-      console.log({ votes });
       return { ...d, votingPower: votes };
     });
   }, [client, contracts.NDCGovernor.abi, contracts.NDCGovernor.address, walletClient]);

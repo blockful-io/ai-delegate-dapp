@@ -38,6 +38,10 @@ const config: HardhatUserConfig = {
     },
   },
   networks: {
+    auroraTestnet: {
+      url: "https://testnet.aurora.dev",
+      accounts: [deployerPrivateKey],
+    },
     // View the networks that are pre-configured.
     // If the network you are looking for is not here you can add new network settings
     hardhat: {
