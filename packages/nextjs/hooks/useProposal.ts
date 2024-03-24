@@ -1,5 +1,6 @@
 "use client";
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 import { useCallback } from "react";
 import { createPublicClient, createWalletClient, custom, encodeFunctionData, http } from "viem";
 import { hardhat, sepolia } from "viem/chains";
@@ -24,11 +25,7 @@ export interface Vote {
 
 const useProposals = () => {
   const { address } = useAccount();
-  const walletClient = createWalletClient({
-    account: address,
-    chain: sepolia,
-    transport: custom(window.ethereum!),
-  });
+
   const publicClient = createPublicClient({
     chain: sepolia,
     // transport: http(),
@@ -61,26 +58,35 @@ const useProposals = () => {
     [publicClient, contract],
   );
 
-  const createProposal = useCallback(
-    async ({ name }: Pick<Proposal, "name">): Promise<void> => {
-      const data = encodeFunctionData({
-        abi: contract.abi,
-        functionName: "propose",
-        args: [[contract.address], [0n], ["0x"], name],
-      });
+  let createProposal: any;
+  if (typeof window !== "undefined") {
+    const walletClient = createWalletClient({
+      account: address,
+      chain: sepolia,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      transport: custom(global?.window && window?.ethereum!),
+    });
+    const createProposal = useCallback(
+      async ({ name }: Pick<Proposal, "name">): Promise<void> => {
+        const data = encodeFunctionData({
+          abi: contract.abi,
+          functionName: "propose",
+          args: [[contract.address], [0n], ["0x"], name],
+        });
 
-      if (!address) {
-        return;
-      }
+        if (!address) {
+          return;
+        }
 
-      await walletClient.sendTransaction({
-        to: contract.address,
-        data,
-        account: address,
-      });
-    },
-    [walletClient, contract, address],
-  );
+        await walletClient.sendTransaction({
+          to: contract.address,
+          data,
+          account: address,
+        });
+      },
+      [walletClient, contract, address],
+    );
+  }
 
   return { getLastProposals, createProposal };
 };

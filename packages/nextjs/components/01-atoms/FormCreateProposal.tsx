@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import useProposals from "~~/hooks/useProposal";
 
@@ -9,7 +9,7 @@ export const FormCreateProposal = () => {
   const { createProposal } = useProposals();
   const router = useRouter();
 
-  async function onSubmit(e) {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     await createProposal({ name: `${name}\n${summary}` });
