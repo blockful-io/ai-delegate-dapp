@@ -9,8 +9,8 @@ async function main() {
     fromBlock: 5546368n,
   });
 
-  const proposals = events.map(events => {
-    const { proposalId, description } = (events as any).args;
+  const proposals = events.map(event => {
+    const { proposalId, description } = (event as any).args;
     return { id: proposalId, description };
   });
 
