@@ -10,7 +10,6 @@ export enum ActiveTab {
 }
 export const Footer = ({ tab }: { tab: ActiveTab }) => {
   const router = useRouter();
-  console.log("tab", tab);
   return (
     <div className="w-full  pt-10">
       <div className="flex gap-2">

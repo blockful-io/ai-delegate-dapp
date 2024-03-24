@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import cc from "classcat";
 import useProposals, { Proposal } from "~~/hooks/useProposal";
 
@@ -20,7 +19,6 @@ export const CardProposals = () => {
     Executed = "Executed",
   }
 
-  const router = useRouter();
   useEffect(() => {
     setLoading(true);
     getLastProposals()
@@ -76,17 +74,6 @@ export const CardProposals = () => {
                 <div className="flex gap-5">
                   <div className="flex">Yes {proposal.proVotes.length}</div>
                   <div className="flex">No {proposal.conVotes.length}</div>
-                </div>
-              </div>
-              <div className="flex pt-4">
-                <div className="gap-2 flex ">
-                  <button
-                    className="px-3 py-2 bg-[#9192951F] text-sm rounded-[100px]"
-                    onClick={() => router.push(`/proposals/${proposal.id}`)}
-                  >
-                    See details
-                  </button>
-                  <button className="px-3 py-2 bg-[#9192951F] text-sm rounded-[100px]">See txn</button>
                 </div>
               </div>
             </div>

@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createAI } from "~~/services/ai";
+import useDelegates from "~~/hooks/useDelegates";
 
 export const FormCreateAI = () => {
   const [name, setName] = useState("");
   const [bias, setBias] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { createDelegate } = useDelegates();
 
   const postAI = async () => {
     try {
       setLoading(true);
-      const ai = await createAI({ name, bias });
+      const ai = await createDelegate({ name, summary: bias });
       router.push(`/delegates/${ai.id}`);
     } catch (err) {
       console.error(err);

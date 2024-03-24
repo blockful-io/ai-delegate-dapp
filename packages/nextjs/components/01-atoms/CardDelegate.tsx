@@ -5,7 +5,7 @@ import { AddressWalletIcon } from "./AddressWalletIcon";
 import { HandIcon } from "./HandIcon";
 import { InfoIcon } from "./InfoIcon";
 import { useAccount } from "wagmi";
-import { AI, getAI } from "~~/services/ai";
+import useDelegates, { AI } from "~~/hooks/useDelegates";
 
 type Props = {
   params: { id: string };
@@ -16,17 +16,17 @@ export const CardDelegate = ({ params }: Props) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { address: connectedAddress } = useAccount();
+  const { fetchDelegate, delegateVote } = useDelegates();
+
   const AI_SKELETONS_NUMBER = 1;
 
   useEffect(() => {
-    async function asyncGetAi() {
-      setLoading(true);
-      setAI(await getAI({ id: params.id }));
-    }
+    setLoading(true);
 
-    asyncGetAi()
-      .then(() => setLoading(false))
-      .catch(e => setError(String(e)));
+    fetchDelegate({ id: params.id })
+      .then(setAI)
+      .catch(setError)
+      .finally(() => setLoading(false));
   }, [params.id]);
 
   if (loading) {
@@ -80,25 +80,14 @@ export const CardDelegate = ({ params }: Props) => {
             <button className="px-3 py-2 bg-[#9192951F] text-sm rounded-[100px]">See details</button>
           </div>
           <div>
-            <button className="bg-[#B1FF6F] text-[#17181C] rounded-[100px] text-sm font-normal px-3 py-2">
+            <button
+              onClick={() => delegateVote({ address: ai.address })}
+              className="bg-[#B1FF6F] text-[#17181C] rounded-[100px] text-sm font-normal px-3 py-2"
+            >
               Delegate
             </button>
           </div>
         </div>
-
-        {/* <div className="flex justify-between">
-        <h1>{ai.name}</h1>
-      </div>
-      <div>
-        <div className="flex space-x-4">
-          <p>Bias: {ai.biasSummary}</p>
-          <p>Voting Power: {ai.votingPower}</p>
-        </div>
-      </div>
-      <div className="w-full flex justify-between">
-        {ai && true && <RevokeButton id={ai.id} />}
-        {ai && <DelegateButton id={ai.id} />}
-      </div> */}
       </div>
     </div>
   );

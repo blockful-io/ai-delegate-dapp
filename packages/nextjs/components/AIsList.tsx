@@ -1,21 +1,23 @@
 import { useRouter } from "next/navigation";
 import { HandIcon } from "./01-atoms/HandIcon";
 import { InfoIcon } from "./01-atoms/InfoIcon";
-import useDelegate from "~~/hooks/useDelegate";
-import { AI } from "~~/services/ai";
+import useDelegate from "~~/hooks/useDelegates";
+import { AI } from "~~/hooks/useDelegates";
 
 interface AIListProps {
   delegates: AI[];
+  onDelegate: (address: string) => Promise<void>;
 }
 
 export const AIsList = ({ delegates }: AIListProps) => {
   const router = useRouter();
-  const { createDelegation } = useDelegate();
+  const { delegateVote } = useDelegate();
 
   return (
     <div className="w-full flex flex-col gap-3 md:justify-center md:items-center">
       <>
         {delegates.map(d => {
+          console.log({ d });
           return (
             <div
               key={d.id}
@@ -34,7 +36,7 @@ export const AIsList = ({ delegates }: AIListProps) => {
                   </div>
                   <div className="flex flex-col">
                     <div className="text-[#323439] text-sm font-medium leading-[16.80px]">{d.name}</div>
-                    <div className="text-[#323439] text-sm">{d.biasSummary}</div>
+                    <div className="text-[#323439] text-sm">{d.summary}</div>
                   </div>
                 </div>
                 <div className="flex justify-center items-center gap-2">
@@ -61,19 +63,12 @@ export const AIsList = ({ delegates }: AIListProps) => {
                 <div>
                   <button
                     className="bg-[#B1FF6F] text-[#17181C] rounded-[100px] text-sm font-normal px-3 py-2 "
-                    onClick={() => createDelegation()}
+                    onClick={() => delegateVote({ address: d.address })}
                   >
                     Delegate
                   </button>
                 </div>
               </div>
-
-              {/* <div className="w-full flex justify-between">
-                <a className="border bg-gray-200 text-black p-1 px-2" href={`/delegates/${d.id}`}>
-                  See details
-                </a>
-                {delegated ? <RevokeButton id={d.id} /> : <DelegateButton id={d.id} />}
-              </div> */}
             </div>
           );
         })}
