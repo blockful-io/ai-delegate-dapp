@@ -58,8 +58,10 @@ export const CardProposals = () => {
             >
               <div className="flex flex-col gap-4">
                 <div className="flex justify-between">
-                  <div className="flex gap-2 min-w-[150px]flex-col">
-                    <div className="text-[#17181C] font-medium text-base flex">{proposal.name}</div>
+                  <div className="flex gap-2 min-w-[150px]">
+                    <div className="text-[#17181C] font-medium text-base flex">
+                      {proposal.name.length > 10 ? proposal.name.slice(0, 10) + "..." : proposal.name}
+                    </div>
                     <div className="text-[#A0A1A5] font-medium text-base">#{proposal.id.slice(0, 8)}</div>
                   </div>
                   <div
