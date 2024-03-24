@@ -9,7 +9,7 @@ import {
   http,
   publicActions,
 } from "viem";
-import { auroraTestnet, sepolia } from "viem/chains";
+import { auroraTestnet } from "viem/chains";
 import { useAccount } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 
@@ -18,7 +18,7 @@ export interface AI {
   address: string;
   name: string;
   summary: string;
-  votingPower: number;
+  votingPower: bigint;
   biasSummary: string;
   delegated: boolean;
   delegatedVotes: {

@@ -42,7 +42,7 @@ export const CardDelegate = ({ params }: Props) => {
   if (error || !ai) {
     return (
       <div>
-        <h1>Error: {error}</h1>
+        <h1>Error</h1>
       </div>
     );
   }
@@ -70,7 +70,7 @@ export const CardDelegate = ({ params }: Props) => {
 
               <div className="flex flex-col">
                 <div className="text-[#323439] text-sm font-medium leading-[16.80px]">Voting Power</div>
-                <div className="text-[#323439] text-sm">{ai.votingPower}</div>
+                <div className="text-[#323439] text-sm">{ai.votingPower.toString()}</div>
               </div>
             </div>
           </div>

@@ -7,7 +7,7 @@ const PROPOSALS_SKELETONS_NUMBER = 6;
 export const CardProposals = () => {
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error] = useState<string | null>(null);
   const { getLastProposals } = useProposals();
 
   enum ProposalState {

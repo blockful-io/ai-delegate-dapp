@@ -9,7 +9,7 @@ interface AIListProps {
 
 export const AIsList = ({ delegates }: AIListProps) => {
   const { delegateVote } = useDelegate();
-  const [delegated, setDelegated] = useState(false);
+  const [delegated] = useState(false);
 
   return (
     <div className="w-full flex flex-col gap-3 md:justify-center md:items-center">
@@ -40,7 +40,7 @@ export const AIsList = ({ delegates }: AIListProps) => {
 
                   <div className="flex flex-col">
                     <div className="text-[#323439] text-sm font-medium leading-[16.80px]">Voting Power</div>
-                    <div className="text-[#323439] text-sm">{d.votingPower}</div>
+                    <div className="text-[#323439] text-sm">{d.votingPower.toString()}</div>
                   </div>
                 </div>
               </div>
