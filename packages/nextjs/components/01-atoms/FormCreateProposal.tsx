@@ -8,17 +8,15 @@ export const FormCreateProposal = () => {
   const [loading, setLoading] = useState(false);
   const { createProposal } = useProposals();
   const router = useRouter();
-  const proposalID = 0x1;
-  window.localStorage.setItem(`${proposalID}-name`, name);
-  window.localStorage.setItem(`${proposalID}-summary`, summary);
 
-  router.push(`/proposals/created?id=${proposalID}`);
   async function onSubmit(e) {
     e.preventDefault();
     setLoading(true);
-    await createProposal({ name: summary });
+    await createProposal({ name: `${name}\n${summary}` });
+    window.localStorage.setItem(`name`, name);
+    window.localStorage.setItem(`summary`, summary);
     setLoading(false);
-    router.back();
+    router.replace("/proposals/created");
   }
 
   return (
@@ -33,9 +31,6 @@ export const FormCreateProposal = () => {
         <input
           onChange={e => {
             setName(e.target.value);
-            if (e.target.value.length <= 20) {
-              setName(e.target.value);
-            }
           }}
           name="name"
           id="name"
@@ -55,9 +50,6 @@ export const FormCreateProposal = () => {
         <textarea
           onChange={e => {
             setSummary(e.target.value);
-            if (e.target.value.length <= 250) {
-              setSummary(e.target.value);
-            }
           }}
           placeholder="Use this prompt to create a new Proposal"
           className="p-4 mb-4 bg-[#323439] rounded-md text-white"

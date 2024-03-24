@@ -8,15 +8,11 @@ export const CardCreatedProposal = ({ proposalId }: { proposalId: string }) => {
   const [name, setName] = useState("");
 
   useEffect(() => {
-    console.log({ proposalId, name });
-
     setLoading(true);
-    setSummary(window.localStorage.getItem(`${proposalId}-summary`)!);
-    setName(window.localStorage.getItem(`${proposalId}-name`)!);
-
-    console.log({ summary, loading });
+    setSummary(window.localStorage.getItem(`summary`)!);
+    setName(window.localStorage.getItem(`name`)!);
     setLoading(false);
-  }, [proposalId, loading]);
+  }, [proposalId]);
 
   if (loading || !summary) {
     return <span>Loading....</span>;
