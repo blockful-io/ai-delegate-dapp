@@ -9,7 +9,7 @@ export const FormCreateProposal = () => {
   const { createProposal } = useProposals();
   const router = useRouter();
 
-  async function onSubmit(e) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     await createProposal({ name: `${name}\n${summary}` });

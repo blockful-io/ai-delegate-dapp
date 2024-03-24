@@ -34,16 +34,17 @@ export interface Vote {
 }
 
 const useProposals = () => {
+  const RPC = "https://eth-sepolia.g.alchemy.com/v2/bow93SW8hqPm2T1pRjzWcGdgueB-lvpb";
   const { address } = useAccount();
+  const transport = typeof window !== "undefined" && window.ethereum ? custom(window.ethereum) : http(RPC);
   const walletClient = createWalletClient({
     account: address,
     chain: sepolia,
-    transport: custom(window.ethereum!),
+    transport,
   }).extend(publicActions);
   const publicClient = createPublicClient({
     chain: sepolia,
-    // transport: http(),
-    transport: http("https://eth-sepolia.g.alchemy.com/v2/bow93SW8hqPm2T1pRjzWcGdgueB-lvpb"),
+    transport: http(RPC),
   });
   const contract = deployedContracts[publicClient.chain.id].NDCGovernor;
 
@@ -56,7 +57,6 @@ const useProposals = () => {
         fromBlock: 0n,
       });
 
-      console.log({ events });
       const proposals = events
         .reverse()
         .slice(0, limit)
@@ -115,4 +115,5 @@ const useProposals = () => {
   return { getLastProposals, createProposal };
 };
 
+export const dynamic = "force-dynamic";
 export default useProposals;
