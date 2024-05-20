@@ -1,6 +1,30 @@
-import { Proposal } from "@/lib/hooks/useProposal";
+/* eslint-disable react-hooks/exhaustive-deps */
+import {
+  DefaultErrorMessage,
+  DelegateCardSkeleton,
+} from "@/components/01-atoms";
+import useProposals, { Proposal } from "@/lib/hooks/useProposal";
+import { useEffect, useState } from "react";
 
-export default function ProposalPage({ proposal }: { proposal: Proposal }) {
+export default function ProposalPage({ id }: { id: string }) {
+  const { fetchProposal } = useProposals();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<unknown | null>(null);
+  const [proposal, setProposal] = useState<Proposal | null>(null);
+
+  useEffect(() => {
+    setError(null);
+
+    fetchProposal({ id })
+      .then((proposal: Proposal) => {
+        setProposal(proposal);
+      })
+      .catch((e: unknown) => {
+        setError(e);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
   const PageContent = (children: JSX.Element) => {
     return (
       <div className="w-full">
@@ -15,6 +39,22 @@ export default function ProposalPage({ proposal }: { proposal: Proposal }) {
       </div>
     );
   };
+
+  if (loading) {
+    return PageContent(
+      <div className="flex flex-col gap-10">
+        <DelegateCardSkeleton />
+      </div>
+    );
+  }
+
+  if (error || !proposal) {
+    return PageContent(
+      <div className="flex flex-col gap-10">
+        <DefaultErrorMessage />
+      </div>
+    );
+  }
 
   return PageContent(
     <div className="flex flex-col space-y-3">
