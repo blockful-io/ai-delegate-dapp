@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { PageTab, PageTabs } from "@/components/02-molecules";
-import { DelegatesList } from "@/components/03-organisms/DelegatesList";
+import { DelegatesList } from "@/components/03-organisms";
 import { SplashScreen } from "@/components/04-templates";
 import { useUser } from "@/lib/hooks/useUser";
 

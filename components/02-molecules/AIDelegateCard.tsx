@@ -1,97 +1,86 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-
-import { useEffect, useState } from "react";
-import {
-  InfoIcon,
-  HandIcon,
-  DelegateCardSkeleton,
-  DefaultErrorMessage,
-} from "../01-atoms";
+import useDelegates, {
+  DelegationStatus,
+  SummarizedAI,
+} from "@/lib/hooks/useDelegates";
+import { useState } from "react";
 import Link from "next/link";
-import useDelegates, { SummarizedAI } from "../../lib/hooks/useDelegates";
+import {
+  awaitBlockchainTxReceipt,
+  triggerToastMessageOnBlockchainError,
+} from "@/lib/blockchain";
+import { BaseError } from "viem";
 
-type AIDelegateCardProps = { id: string };
-
-export const AIDelegateCard = ({ id }: AIDelegateCardProps) => {
-  const [ai, setAI] = useState<SummarizedAI | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<unknown | null>(null);
-  const { fetchDelegate, delegateVote } = useDelegates();
-
-  useEffect(() => {
-    setLoading(true);
-
-    fetchDelegate({ id })
-      .then((ai) => setAI(ai))
-      .catch((e) => setError(e))
-      .finally(() => setLoading(false));
-  }, [id]);
-
-  if (loading) {
-    return (
-      <div className="flex flex-col gap-10">
-        <DelegateCardSkeleton />
-      </div>
-    );
-  }
-
-  if (error || !ai) {
-    return <DefaultErrorMessage />;
-  }
+export const AIDelegateCard = ({ delegate }: { delegate: SummarizedAI }) => {
+  const { delegateVote } = useDelegates();
+  const [delegatedStatus, setDelegatedStatus] = useState(
+    DelegationStatus.UNDELEGATED
+  );
 
   return (
-    <div className="w-full flex flex-col justify-center items-center max-w-[400px]">
-      <div className="border border-gray-300 p-4 text-white bg-[#F6F9F6] w-full max-h-[168px] rounded-xl">
-        <div className="flex flex-col gap-4">
-          <div className="flex gap-5 justify-between">
-            <div className="flex justify-center items-center gap-2">
-              <div className="w-9 h-9 border rounded-[100px] flex justify-center items-center bg-[#9192951F]">
-                <InfoIcon />
-              </div>
-              <div className="flex flex-col">
-                <div className="text-[#323439] text-sm font-medium leading-[16.80px]">
-                  {ai.id}
-                </div>
-                <div className="text-[#323439] text-sm">{ai.summary}</div>
-              </div>
-            </div>
-            <div className="flex justify-center items-center gap-2">
-              <div className="w-9 h-9 border rounded-[100px] flex justify-center items-center bg-[#9192951F]">
-                <HandIcon />
-              </div>
-
-              <div className="flex flex-col">
-                <div className="text-[#323439] text-sm font-medium leading-[16.80px]">
-                  Voting Power
-                </div>
-                <div className="text-[#323439] text-sm">
-                  1.000.000
-                  {/* For mockup only */}
-                  {/* {ai.votingPower.toString()} */}
-                </div>
-              </div>
-            </div>
-          </div>
+    <div
+      key={delegate.id}
+      className="border flex flex-col items-between h-full border-gray-300 p-4 text-white bg-[#F6F9F6] max-w-[382px] rounded-xl md:w-full"
+    >
+      <div className="flex flex-col gap-4 mb-2">
+        <div className="text-black flex font-semibold">{delegate.name}</div>
+      </div>
+      <div className="flex justify-between gap-5">
+        <div className="flex justify-center items-center gap-2">
+          <p className="text-[#323439] text-sm font-medium leading-[16.80px]">
+            Bias summary: {delegate.summary}
+          </p>
         </div>
-        <div className="text-black flex pt-4 justify-between">
-          <div className="gap-2 flex ">
-            <Link
-              href={`/delegates/${id}`}
-              className="px-3 py-2 bg-[#9192951F] text-sm rounded-[100px]"
-            >
-              See details
-            </Link>
-          </div>
-          <div>
-            <button
-              onClick={() =>
-                delegateVote({ address: ai.address as `0x${string}` })
+      </div>
+
+      <div className="text-black flex pt-4 justify-between">
+        <div className="gap-2 flex">
+          <Link
+            className="underline underline-offset-3 px-3 py-2 bg-gray-500 text-sm rounded-[100px] hover:bg-gray-400 transition cursor-pointer"
+            href={`https://explorer.aurora.dev/address/${delegate.address}`}
+          >
+            See address
+          </Link>
+          <Link
+            className="underline underline-offset-3 px-3 py-2 bg-gray-500 text-sm rounded-[100px] hover:bg-gray-400 transition cursor-pointer"
+            href={`/delegates/${delegate.id}`}
+          >
+            See details
+          </Link>
+        </div>
+        <div>
+          <button
+            disabled={delegatedStatus !== DelegationStatus.UNDELEGATED}
+            className="bg-[#B1FF6F] text-[#17181C] rounded-[100px] text-sm font-normal px-3 py-2 "
+            onClick={async () => {
+              let txHash: `0x${string}` | undefined = undefined;
+
+              setDelegatedStatus(DelegationStatus.DELEGATING);
+
+              try {
+                txHash = await delegateVote({
+                  address: delegate.address as `0x${string}`,
+                });
+              } catch (e) {
+                triggerToastMessageOnBlockchainError(e as BaseError);
+
+                setDelegatedStatus(DelegationStatus.UNDELEGATED);
               }
-              className="bg-[#B1FF6F] text-[#17181C] rounded-[100px] text-sm font-normal px-3 py-2"
-            >
-              Delegate
-            </button>
-          </div>
+
+              const txReceipt = await awaitBlockchainTxReceipt(
+                txHash as `0x${string}`
+              );
+
+              if (txReceipt.status === "success") {
+                setDelegatedStatus(DelegationStatus.DELEGATED);
+              }
+            }}
+          >
+            {delegatedStatus === DelegationStatus.DELEGATING
+              ? "Delegating"
+              : delegatedStatus === DelegationStatus.DELEGATED
+              ? "Delegated"
+              : "Delegate"}
+          </button>
         </div>
       </div>
     </div>

@@ -13,6 +13,7 @@ import { TheHeader } from "@/components/02-molecules";
 
 import "@rainbow-me/rainbowkit/styles.css";
 import "@/public/output.css";
+import { Toaster } from "react-hot-toast";
 
 export default function MyApp({
   Component,
@@ -36,6 +37,14 @@ export default function MyApp({
                 <div className="max-w-[1024px] w-full h-screen min-w-[335px]">
                   <main className="w-full flex flex-col items-center justify-between">
                     <TheHeader />
+                    <Toaster
+                      toastOptions={{
+                        style: {
+                          background: "#333",
+                          color: "#fff",
+                        },
+                      }}
+                    />
                     <Component {...pageProps} />
                   </main>
                 </div>

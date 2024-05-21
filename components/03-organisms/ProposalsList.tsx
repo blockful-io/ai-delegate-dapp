@@ -1,22 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { AIDelegateCard } from "../02-molecules";
 import { useEffect, useState } from "react";
-import { DefaultErrorMessage, DelegateCardSkeleton } from "../01-atoms";
-import useDelegates, { SummarizedAI } from "../../lib/hooks/useDelegates";
+import { DefaultErrorMessage, ProposalCardSkeleton } from "../01-atoms";
+import useProposals, { Proposal } from "@/lib/hooks/useProposal";
+import { ProposalCard } from "../02-molecules";
 
-export const DelegatesList = () => {
-  const { fetchDelegates } = useDelegates();
+export const ProposalsList = () => {
+  const { getLastProposals } = useProposals();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<unknown | null>(null);
-  const [delegatesList, setDelegatesList] = useState<SummarizedAI[]>([]);
+  const [proposalsList, setProposalsList] = useState<Proposal[]>([]);
 
   useEffect(() => {
     setError(null);
 
-    fetchDelegates()
-      .then((delegates: SummarizedAI[]) => {
-        console.log(delegates);
-        setDelegatesList(delegates);
+    getLastProposals()
+      .then((proposal: Proposal[]) => {
+        console.log(proposal);
+        setProposalsList(proposal);
       })
       .catch((e: unknown) => {
         setError(e);
@@ -28,14 +28,14 @@ export const DelegatesList = () => {
     <div className="w-full h-full flex flex-grow">
       <div className="w-full h-full flex items-center flex-col flex-grow">
         <h1 className="my-6 text-[#F6F9F6] w-full flex text-2xl space-grotesk">
-          Delegate to biased AI
+          Previous proposals
         </h1>
         <div className="h-max flex-grow w-full">
           {loading ? (
             <div className="w-full flex-col space-y-3">
-              <DelegateCardSkeleton />
-              <DelegateCardSkeleton />
-              <DelegateCardSkeleton />
+              <ProposalCardSkeleton />
+              <ProposalCardSkeleton />
+              <ProposalCardSkeleton />
             </div>
           ) : error ? (
             <div className="flex-col space-y-3">
@@ -43,8 +43,8 @@ export const DelegatesList = () => {
             </div>
           ) : (
             <div className="w-full gap-3 flex flex-col justify-center">
-              {delegatesList.map((delegate) => (
-                <AIDelegateCard key={delegate.id} delegate={delegate} />
+              {proposalsList.map((proposal) => (
+                <ProposalCard key={proposal.id} proposal={proposal} />
               ))}
             </div>
           )}

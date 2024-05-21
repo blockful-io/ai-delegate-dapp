@@ -1,6 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback } from "react";
 import axios from "axios";
 import {
+  BaseError,
+  Hex,
   createPublicClient,
   createWalletClient,
   custom,
@@ -12,27 +15,24 @@ import {
 import { auroraTestnet } from "viem/chains";
 import { useAccount } from "wagmi";
 import deployedContracts from "../../contracts/deployedContracts";
-import { AIDelegates } from "../mocks";
+import { getAIDelegateVotingPower } from "../blockchain";
 
-// For mockup only
 export interface SummarizedAI {
   id: string;
+  name: string;
   summary: string;
   address: string;
 }
 
-export interface AI {
-  id: string;
-  address: `0x${string}`;
-  name: string;
-  summary: string;
+export enum DelegationStatus {
+  UNDELEGATED,
+  DELEGATING,
+  DELEGATED,
+}
+
+export interface AI extends SummarizedAI {
+  delegationStatus: DelegationStatus;
   votingPower: bigint;
-  biasSummary: string;
-  delegated: boolean;
-  delegatedVotes: {
-    delegate: string;
-    votes: number;
-  }[];
 }
 
 const useDelegates = () => {
@@ -67,47 +67,53 @@ const useDelegates = () => {
 
     return await Promise.all(
       delegates.map(async (delegate: SummarizedAI) => {
-        const data = encodeFunctionData({
-          abi: contracts.NDCGovernor.abi,
-          functionName: "getVotes",
-          args: [delegate.address as `0x${string}`, 0n],
-        });
-        const r = await walletClient.call({
-          data,
-          to: contracts.NDCGovernor.address,
-        });
+        const votingPower = await getAIDelegateVotingPower(
+          delegate,
+          publicClient,
+          contracts.NDCGovernor
+        );
 
-        const votes = decodeFunctionResult({
-          abi: contracts.NDCGovernor.abi,
-          data: r.data!,
-          functionName: "getVotes",
-        });
-        return { ...delegate, votingPower: votes };
+        return {
+          ...delegate,
+          votingPower,
+          delegationStatus: DelegationStatus.UNDELEGATED,
+        };
       })
     );
   }, [
-    client,
     contracts.NDCGovernor.abi,
+    walletClient.account?.address,
     contracts.NDCGovernor.address,
-    walletClient,
   ]);
 
   const fetchDelegate = useCallback(
-    async ({ id }: Pick<SummarizedAI, "id">): Promise<SummarizedAI> => {
-      const { data: ai } = await client.get<AI>(`/delegates/${id}`);
-      return ai;
+    async ({ id }: Pick<AI, "id">): Promise<AI> => {
+      const { data: ai } = await client.get<SummarizedAI>(`/delegates/${id}`);
+
+      return {
+        ...ai,
+        delegationStatus: DelegationStatus.UNDELEGATED,
+        votingPower: 0n,
+      };
     },
     [client]
   );
 
-  const fetchAllDelegatesVotes = useCallback(async (): Promise<AI> => {
-    const { data: votes } = await client.get<AI>(`/ai-delegate-votes`);
-    return votes;
-  }, [client]);
+  const fetchAllDelegatesVotes =
+    useCallback(async (): Promise<SummarizedAI> => {
+      const { data: votes } = await client.get<SummarizedAI>(
+        `/ai-delegate-votes`
+      );
+      return votes;
+    }, [client]);
 
   const fetchDelegateVotes = useCallback(
-    async ({ voter }: { voter: `0x${string}` }): Promise<AI> => {
-      const { data: votes } = await client.get<AI>(
+    async ({
+      voter,
+    }: {
+      voter: `0x${string}`;
+    }): Promise<Record<string, any>[]> => {
+      const { data: votes } = await client.get<Record<string, any>[]>(
         `/ai-delegate-vote/${voter}`
       );
       return votes;
@@ -119,7 +125,7 @@ const useDelegates = () => {
     async ({
       name,
       summary: bias,
-    }: Pick<AI, "name" | "summary">): Promise<void> => {
+    }: Pick<SummarizedAI, "name" | "summary">): Promise<void> => {
       await client.post("/delegates", {
         name,
         message: bias,
@@ -129,21 +135,21 @@ const useDelegates = () => {
   );
 
   const deleteAI = useCallback(
-    async ({ id }: Pick<AI, "id">): Promise<void> => {
+    async ({ id }: Pick<SummarizedAI, "id">): Promise<void> => {
       await client.delete(`/delegates/${id}`);
     },
     [client]
   );
 
   const delegateVote = useCallback(
-    async ({ address }: Pick<AI, "address">) => {
-      const data = encodeFunctionData({
+    async ({ address }: Pick<SummarizedAI, "address">) => {
+      const data: Hex = encodeFunctionData({
         abi: contracts.NDCToken.abi,
         functionName: "delegate",
-        args: [address],
+        args: [address as `0x${string}`],
       });
 
-      await walletClient.sendTransaction({
+      return await walletClient.sendTransaction({
         to: contracts.NDCToken.address,
         data,
         account: connectedAddress!,
