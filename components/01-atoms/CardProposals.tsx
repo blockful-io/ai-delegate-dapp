@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import cc from "classcat";
 import { useEffect, useState } from "react";
-import useProposals, { Proposal } from "../../lib/hooks/useProposal";
+import useProposal, { Proposal } from "@/lib/hooks/useProposal";
 
 const PROPOSALS_SKELETONS_NUMBER = 6;
 
@@ -9,7 +9,7 @@ export const CardProposals = () => {
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error] = useState<string | null>(null);
-  const { getLastProposals } = useProposals();
+  const { getLastProposals } = useProposal();
 
   enum ProposalState {
     Pending = "Pending",

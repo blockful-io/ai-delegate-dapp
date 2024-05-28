@@ -1,16 +1,7 @@
-import {
-  BaseError,
-  PublicClient,
-  TransactionReceipt,
-  WalletClient,
-  decodeFunctionResult,
-  encodeFunctionData,
-  walletActions,
-} from "viem";
+import { BaseError, PublicClient, TransactionReceipt } from "viem";
+import { SummarizedAI } from "./hooks/useDelegate";
 import { publicClient } from "./wallet-config";
 import toast from "react-hot-toast";
-import { SummarizedAI } from "./hooks/useDelegates";
-import deployedContracts from "@/contracts/deployedContracts";
 
 export const awaitBlockchainTxReceipt = async (
   txHash: `0x${string}`

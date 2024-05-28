@@ -8,10 +8,9 @@ import {
   http,
   publicActions,
 } from "viem";
-import { auroraTestnet } from "viem/chains";
+import { sepolia } from "viem/chains";
 import { useAccount } from "wagmi";
-import deployedContracts from "../../contracts/deployedContracts";
-import axios from "axios";
+import deployedContracts from "@/contracts/deployedContracts";
 
 enum Status {
   Pending = 0,
@@ -40,15 +39,12 @@ export interface Vote {
   votes: number;
 }
 
-const useProposals = () => {
+const useProposal = () => {
   const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL;
-  const SERVER_URL = process.env.NEXT_PUBLIC_AI_DELEGATE_ENDPOINT;
 
   if (!RPC_URL) {
     throw new Error("RPC_URL is not defined");
   }
-
-  if (!SERVER_URL) throw new Error("Missing NEXT_PUBLIC_AI_DELEGATE_ENDPOINT");
 
   const { address } = useAccount();
   const transport =
@@ -57,15 +53,12 @@ const useProposals = () => {
       : http(RPC_URL);
   const walletClient = createWalletClient({
     account: address,
-    chain: auroraTestnet,
+    chain: sepolia,
     transport,
   }).extend(publicActions);
   const publicClient = createPublicClient({
-    chain: auroraTestnet,
+    chain: sepolia,
     transport: http(RPC_URL),
-  });
-  const client = axios.create({
-    baseURL: SERVER_URL,
   });
   const contract = deployedContracts[publicClient.chain.id].NDCGovernor;
 
@@ -123,14 +116,6 @@ const useProposals = () => {
     [publicClient, contract, walletClient]
   );
 
-  const fetchProposal = useCallback(
-    async ({ id }: Pick<Proposal, "id">): Promise<Proposal> => {
-      const { data: proposal } = await client.get<Proposal>(`/proposals/${id}`);
-      return proposal;
-    },
-    [client]
-  );
-
   const createProposal = useCallback(
     async ({ name }: Pick<Proposal, "name">): Promise<void> => {
       const data = encodeFunctionData({
@@ -152,8 +137,8 @@ const useProposals = () => {
     [walletClient, contract, address]
   );
 
-  return { getLastProposals, createProposal, fetchProposal };
+  return { getLastProposals, createProposal };
 };
 
 export const dynamic = "force-dynamic";
-export default useProposals;
+export default useProposal;

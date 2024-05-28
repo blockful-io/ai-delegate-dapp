@@ -14,28 +14,23 @@ export const PageTabs = ({ activeTab }: { activeTab: PageTab }) => {
     <div className="w-full pt-10">
       <div className="flex gap-2">
         <Link
-          href={"/delegates"}
-          className={cc([
-            "p-3 w-full gap-2 h-10 items-center flex justify-center  rounded-[100px] text-[#F6F9F6] cursor-pointer",
-            activeTab === PageTab.DELEGATES && "bg-[#F6F9F626]",
-          ])}
-        >
-          {activeTab === PageTab.DELEGATES && (
-            <ArrowIcon className="text-white w-5" />
-          )}
-          Delegates
-        </Link>
-        <Link
           href={"/proposals"}
           className={cc([
-            "p-3 w-full gap-2 h-10 items-center flex justify-center rounded-[100px] text-[#F6F9F6] cursor-pointer",
+            "p-3 w-full gap-2 h-10 items-center flex justify-center rounded-[100px] text-[#F6F9F6]",
             activeTab === PageTab.PROPOSAL && "bg-[#F6F9F626]",
           ])}
         >
-          {activeTab === PageTab.PROPOSAL && (
-            <ArrowIcon className="text-white w-5" />
-          )}
           Proposals
+        </Link>
+        <Link
+          href={"/delegates"}
+          className={cc([
+            "p-3 w-full gap-2 h-10 items-center flex justify-center  rounded-[100px] text-[#F6F9F6]",
+            activeTab === PageTab.DELEGATES && "bg-[#F6F9F626]",
+          ])}
+        >
+          <ArrowIcon className="text-white w-5" />
+          Delegates
         </Link>
       </div>
     </div>

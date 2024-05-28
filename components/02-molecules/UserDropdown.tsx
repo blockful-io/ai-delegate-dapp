@@ -1,64 +1,40 @@
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEnsAvatar, useEnsName } from "wagmi";
-import { useUser } from "@/lib/hooks/useUser";
-import { ADDRESS_ZERO } from "@/lib/mocks";
-import { useEffect } from "react";
-import { mainnetChainConfig } from "@/lib/wallet-config";
+import { useState } from "react";
+import { signOut } from "next-auth/react";
+import { useAccount, useEnsName } from "wagmi";
+import { XIcon } from "../01-atoms";
 
 export const UserDropdown = () => {
-  const { authedUser, loadingAuthenticatedUser, disconnectUser } = useUser();
-  const { data: ensName, refetch: fetchEnsName } = useEnsName({
-    address: authedUser ?? ADDRESS_ZERO,
-    config: mainnetChainConfig,
-    chainId: 1,
-  });
+  const { address } = useAccount();
+  const { data: ensName } = useEnsName({ address });
 
-  useEffect(() => {
-    if (authedUser) fetchEnsName();
-  }, [authedUser]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const {
-    data: ensAvatar,
-    isLoading: isLoadingAvatar,
-    refetch: fetchEnsAvatar,
-  } = useEnsAvatar({
-    name: ensName ?? "",
-    config: mainnetChainConfig,
-    chainId: 1,
-  });
-
-  useEffect(() => {
-    if (ensName) fetchEnsAvatar();
-  }, [ensName]);
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
 
   return (
-    <button
-      className="flex space-x-3 items-center cursor-pointer"
-      onClick={() => disconnectUser()}
-    >
-      <div style={{ width: "24px", height: "24px" }}>
-        {ensAvatar ? (
-          <img
-            src={ensAvatar}
-            alt="ENS domain avatar"
-            className="rounded-full"
-          />
-        ) : isLoadingAvatar && ensName ? (
-          <div className="w-full h-full relative block rounded-full bg-gray-300"></div>
-        ) : (
-          <div className="w-full h-full rounded-full bg-[#B1FF6F]"></div>
-        )}
-      </div>
-      {loadingAuthenticatedUser ? (
-        <div className="w-20 h-3 rounded-lg bg-gray-50 animate-pulse"></div>
-      ) : (
-        <p className="text-sm">
-          {ensName
-            ? ensName
-            : authedUser?.slice(0, 6) + "..." + authedUser?.slice(-4)}
-        </p>
+    <div className="flex space-x-3 relative">
+      <div className="h-6 w-6 bg-gradient-avatar rounded-full" />
+      <button
+        onClick={toggleModal}
+        className="truncate max-w-[120px] font-semibold"
+      >
+        {ensName ? ensName : address?.slice(0, 6) + "..." + address?.slice(-4)}
+      </button>
+      {isModalOpen && (
+        <div className="z-50 flex flex-col space-y-3 p-2 min-w-[180px] rounded-xl items-end justify-center bg-[#2d2c2c] absolute top-[36px] right-0">
+          <button onClick={toggleModal} className="cursor-pointer">
+            <XIcon className="w-4 mr-1" />
+          </button>
+          <button
+            className="bg-black text-[#B2FF72] rounded-full px-3 py-1 font-semibold cursor-pointer hover:text-[#81dd37] transition"
+            onClick={() => signOut()}
+          >
+            Disconnect wallet
+          </button>
+        </div>
       )}
-    </button>
+    </div>
   );
 };

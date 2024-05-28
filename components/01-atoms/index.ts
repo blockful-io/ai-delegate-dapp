@@ -5,7 +5,6 @@ export * from "./CardProposals";
 export * from "./FormCreateProposal";
 export * from "./DelegateCardSkeleton";
 export * from "./DefaultErrorMessage";
-export * from "./ProposalCardSkeleton";
 
 // Icons
 export * from "./icons/XIcon";

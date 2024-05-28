@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { signOut, useSession } from "next-auth/react";
 import { useAccount, useDisconnect } from "wagmi";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface AuthenticatedUserHook {
   loadingAuthenticatedUser: boolean;
@@ -23,7 +23,7 @@ export const useUser = (): AuthenticatedUserHook => {
     const authenticatedAccount =
       isConnected &&
       !!authedUser &&
-      authedUser.user?.id == address?.toLowerCase();
+      authedUser.user?.name?.toLowerCase() == address?.toLowerCase();
 
     setAuthenticatedAddress(authenticatedAccount && address ? address : null);
     setLoadingAuthenticatedUser(false);
@@ -33,7 +33,6 @@ export const useUser = (): AuthenticatedUserHook => {
     signOut({ redirect: false }).then(() => {
       if (authenticatedAddress) {
         disconnect();
-        window.location.href = "/";
       }
     });
   };

@@ -4,7 +4,7 @@ import {
   DefaultErrorMessage,
   DelegateCardSkeleton,
 } from "@/components/01-atoms";
-import useDelegates, { SummarizedAI } from "@/lib/hooks/useDelegates";
+import useDelegate, { SummarizedAI } from "@/lib/hooks/useDelegate";
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 
 export const getServerSideProps: GetServerSideProps = async (
@@ -21,7 +21,7 @@ export const getServerSideProps: GetServerSideProps = async (
 };
 
 export default function AIDelegatePage({ delegateId }: { delegateId: string }) {
-  const { fetchDelegate, fetchDelegateVotes } = useDelegates();
+  const { fetchDelegate, fetchDelegateVotes } = useDelegate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<unknown | null>(null);
   const [delegate, setDelegate] = useState<SummarizedAI | null>(null);
@@ -80,27 +80,44 @@ export default function AIDelegatePage({ delegateId }: { delegateId: string }) {
   }
 
   return PageContent(
-    <div className="flex flex-col space-y-3 w-full">
-      <h1>Name: {delegate?.name}</h1>
-      <h3>ID: {delegate?.id}</h3>
-      <h4 style={{ wordBreak: "break-all" }}>Address: {delegate?.address}</h4>
-      <p>Bias summary: {delegate?.summary}</p>
-      {Array.isArray(delegateVotes) && delegateVotes.length ? (
-        <div>
-          <h3>Votes</h3>
-          <ul>
-            {delegateVotes.map((vote) => (
-              <li key={vote.id}>
-                {vote.type} - {vote.voter}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        <p className="text-gray-50 text-sm mt-10">
-          Note: this AI Delegate has not voted in DAO proposals yet
+    <>
+      <div className="flex flex-col space-y-3 w-full">
+        <h3 className="space-x-2 flex flex-wrap">
+          <p className="underline underline-offset-1">ID____</p>
+          <p>{delegate?.id}</p>
+        </h3>
+        <h1 className="space-x-2 flex flex-wrap">
+          <p className="underline underline-offset-1">Name____</p>
+          <p>{delegate?.name}</p>
+        </h1>
+        <h3 className="space-x-2 flex flex-col space-y-2 flex-wrap">
+          <p className="underline underline-offset-1">Address____</p>
+          <p className="break-all">{delegate?.address}</p>
+        </h3>
+        <p className="space-x-2 flex flex-col space-y-2 flex-wrap">
+          <p className="underline underline-offset-1">Bias summary____</p>
+          <p className="break-word">{delegate?.summary}</p>
         </p>
-      )}
-    </div>
+      </div>
+      <div className="mt-20">
+        {Array.isArray(delegateVotes) && delegateVotes.length ? (
+          <div>
+            <h3 className="underline underline-offset-1">Votes</h3>
+            <ul>
+              {delegateVotes.map((vote) => (
+                <li key={vote.id}>
+                  {vote.type} - {vote.voter}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <p className="border-[#99E24E] border flex p-2 rounded-lg space-x-2 text-sm">
+            Note____ this AI Delegate has not voted in DAO proposals yet.
+            Delegate votes to see it voting in the next DAO proposal!
+          </p>
+        )}
+      </div>
+    </>
   );
 }
