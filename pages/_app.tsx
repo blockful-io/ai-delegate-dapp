@@ -25,7 +25,7 @@ export default function App({
   session: Session;
 }>) {
   return (
-    <body className="flex justify-center my-6 mx-5">
+    <body className="w-full flex justify-center my-6">
       <WagmiProvider config={wagmiConfig}>
         <SessionProvider session={pageProps.session}>
           <QueryClientProvider client={queryClient}>
@@ -48,7 +48,7 @@ export default function App({
                       },
                     }}
                   />
-                  <main className="max-w-[400px] w-full h-full flex flex-col items-center justify-between">
+                  <main className="max-w-[335px] w-full h-full flex flex-col items-center justify-between">
                     <Component {...pageProps} />
                   </main>
                 </div>

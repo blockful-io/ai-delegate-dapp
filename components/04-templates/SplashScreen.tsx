@@ -12,7 +12,7 @@ export const SplashScreen = () => {
       />
       <div className="mt-auto mb-40">
         <h1 className="text-2xl font-semibold space-grotesk mb-4 md:text-4xl">
-          Change the game of <br /> the AIs you use.
+          Change the game of the DAOs you participate.
         </h1>
         <p className="text-gray-200 inter">Connect your wallet.</p>
       </div>

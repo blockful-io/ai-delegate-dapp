@@ -1,4 +1,4 @@
-import useDao, { DAO } from "@/lib/hooks/useDao";
+import useDao, { DAOWithProposals } from "@/lib/hooks/useDao";
 import { useEffect, useState } from "react";
 import { DefaultErrorMessage } from "../01-atoms";
 import Link from "next/link";
@@ -9,7 +9,7 @@ export const DaosList = () => {
   const { fetchDaos } = useDao();
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [daos, setDaos] = useState<DAO | null>(null);
+  const [daos, setDaos] = useState<DAOWithProposals[] | null>(null);
 
   useEffect(() => {
     fetchDaos()
@@ -47,10 +47,16 @@ export const DaosList = () => {
     );
   }
   return (
-    <Link href={`/delegates`}>
-      <h1 className="bg-[#4A6A30] font-black w-[100px] h-[40px] rounded-lg flex items-center justify-center">
-        {daos?.daoName}
-      </h1>
-    </Link>
+    <ul className="flex space-x-3 space-y-3 items-center justify-center">
+      {daos?.map((dao) => (
+        <li key={dao.id}>
+          <Link href={`/dao/${dao?.id}/delegates`}>
+            <h1 className="bg-[#4A6A30] hover:bg-[#618246] transition font-black w-[100px] h-[40px] rounded-lg flex items-center justify-center">
+              {dao?.name}
+            </h1>
+          </Link>
+        </li>
+      ))}
+    </ul>
   );
 };

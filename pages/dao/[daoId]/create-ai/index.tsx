@@ -3,8 +3,7 @@ import { FormCreateAI } from "@/components/01-atoms";
 import { useAuthorizedAccess } from "@/lib/hooks/useAuthorizedAccess";
 
 const CreateAI: NextPage = () => {
-  // useAuthorizedAccess();
-
+  useAuthorizedAccess();
   return (
     <div className="w-full">
       <div className="w-full flex items-center flex-col ">

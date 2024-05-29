@@ -1,4 +1,3 @@
-export * from "./AIsList";
 export * from "./AIDelegateCard";
 export * from "./CreatedProposalSuccess";
 export * from "./TheHeader";

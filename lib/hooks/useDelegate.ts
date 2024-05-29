@@ -6,13 +6,12 @@ import {
   createPublicClient,
   createWalletClient,
   custom,
-  decodeFunctionResult,
   encodeFunctionData,
   http,
   publicActions,
 } from "viem";
-import { sepolia } from "viem/chains";
 import { useAccount } from "wagmi";
+import { sepolia } from "viem/chains";
 import deployedContracts from "@/contracts/deployedContracts";
 
 export interface SummarizedAI {
@@ -160,11 +159,11 @@ const useDelegate = () => {
   > => {
     if (!connectedAddress && !client) return null;
 
-    const delegatedVotes: DelegatedVotes = await client.get(
+    const { data } = await client.get(
       `/has-delegated-votes/${connectedAddress}`
     );
 
-    return delegatedVotes.delegatorAddr;
+    return data.delegatorAddr;
   }, [connectedAddress]);
 
   return {

@@ -2,8 +2,7 @@ import { useAuthorizedAccess } from "@/lib/hooks/useAuthorizedAccess";
 import { CardCreatedProposal, TheHeader } from "@/components/02-molecules";
 
 const CreatedProposal = ({ id }: { id: string }) => {
-  // useAuthorizedAccess();
-
+  useAuthorizedAccess();
   return (
     <div className="w-full">
       <TheHeader />

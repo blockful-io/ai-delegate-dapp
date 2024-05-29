@@ -4,6 +4,7 @@ export * from "./FormCreateAI";
 export * from "./CardProposals";
 export * from "./FormCreateProposal";
 export * from "./DelegateCardSkeleton";
+export * from "./ProposalCardSkeleton";
 export * from "./DefaultErrorMessage";
 
 // Icons

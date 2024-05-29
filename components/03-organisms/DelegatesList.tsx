@@ -4,7 +4,7 @@ import { DefaultErrorMessage, DelegateCardSkeleton } from "../01-atoms";
 import useDelegate, { SummarizedAI } from "@/lib/hooks/useDelegate";
 import { AIDelegateCard } from "../02-molecules";
 
-export const DelegatesList = () => {
+export const DelegatesList = ({ daoId }: { daoId: string }) => {
   const { fetchDelegates } = useDelegate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<unknown | null>(null);
@@ -12,7 +12,10 @@ export const DelegatesList = () => {
 
   useEffect(() => {
     setError(null);
+    fetchDelegatesList();
+  }, []);
 
+  const fetchDelegatesList = () => {
     fetchDelegates()
       .then((delegates: SummarizedAI[]) => {
         setDelegatesList(delegates);
@@ -21,10 +24,14 @@ export const DelegatesList = () => {
         setError(e);
       })
       .finally(() => setLoading(false));
-  }, []);
+  };
+
+  const refreshAIDelegates = () => {
+    fetchDelegatesList();
+  };
 
   return (
-    <div className="w-full h-full flex flex-grow mb-10">
+    <div className="w-full h-full flex flex-grow mb-10 border border-gray-100 p-2 rounded-xl mt-10">
       <div className="w-full h-full flex items-center flex-col flex-grow">
         <h1 className="font-semibold my-6 text-[#F6F9F6] w-full flex text-2xl space-grotesk justify-center">
           Delegate to biased AI
@@ -47,9 +54,14 @@ export const DelegatesList = () => {
               <DefaultErrorMessage />
             </div>
           ) : (
-            <div className="w-full gap-3 flex justify-center flex-wrap max-w-[400px]">
+            <div className="w-full gap-3 flex justify-center flex-wrap max-w-[335px]">
               {delegatesList.map((delegate: SummarizedAI) => (
-                <AIDelegateCard key={delegate.id} delegate={delegate} />
+                <AIDelegateCard
+                  daoId={daoId}
+                  key={delegate.id}
+                  delegate={delegate}
+                  onDelegatedVotes={refreshAIDelegates}
+                />
               ))}
             </div>
           )}

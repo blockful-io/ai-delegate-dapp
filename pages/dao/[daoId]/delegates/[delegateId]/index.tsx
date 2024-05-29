@@ -11,11 +11,11 @@ export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
   const { params } = context;
-  const { id } = params || {};
+  const { delegateId } = params || {};
 
   return {
     props: {
-      delegateId: id,
+      delegateId,
     },
   };
 };
@@ -113,8 +113,8 @@ export default function AIDelegatePage({ delegateId }: { delegateId: string }) {
           </div>
         ) : (
           <p className="border-[#99E24E] border flex p-2 rounded-lg space-x-2 text-sm">
-            Note____ this AI Delegate has not voted in DAO proposals yet.
-            Delegate votes to see it voting in the next DAO proposal!
+            Note____ this AI Delegate has not voted in Proposals proposals yet.
+            Delegate votes to see it voting in the next Proposals proposal!
           </p>
         )}
       </div>

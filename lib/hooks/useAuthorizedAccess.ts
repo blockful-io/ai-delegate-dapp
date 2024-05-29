@@ -4,11 +4,11 @@ import { useUser } from "./useUser";
 import { useRouter } from "next/navigation";
 
 export const useAuthorizedAccess = () => {
-  const { authedUser } = useUser();
+  const { authedUser, loadingAuthenticatedUser } = useUser();
   const router = useRouter();
 
   useEffect(() => {
-    if (!authedUser) {
+    if (!authedUser && !loadingAuthenticatedUser) {
       router.push("/");
     }
   }, [authedUser]);

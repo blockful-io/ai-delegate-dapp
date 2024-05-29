@@ -41,7 +41,7 @@ export const TheHeader = () => {
                   className={notConnectedClassName}
                 >
                   <WalletIcon />
-                  <span className="inter">Connect</span>
+                  <span className="inter font-semibold">Connect</span>
                 </button>
               );
             }

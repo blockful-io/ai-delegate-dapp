@@ -1,67 +1,80 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import useDelegate, {
-  DelegationStatus,
-  SummarizedAI,
-} from "@/lib/hooks/useDelegate";
-import { useEffect, useState } from "react";
+import useProposal, { Proposal } from "@/lib/hooks/useProposal";
+import { DefaultErrorMessage, ProposalCardSkeleton } from "../01-atoms";
 import Link from "next/link";
-import {
-  awaitBlockchainTxReceipt,
-  triggerToastMessageOnBlockchainError,
-} from "@/lib/blockchain";
-import { BaseError } from "viem";
-import { ArrowIcon, HandIcon, InfoIcon } from "../01-atoms";
-import { toast } from "react-hot-toast";
-import cc from "classcat";
+import { useEffect, useState } from "react";
 
-export const ProposalCard = ({ delegate }: { delegate: SummarizedAI }) => {
-  const { delegateVote, userDelegatedVotesTo } = useDelegate();
-  const [delegatedStatus, setDelegatedStatus] = useState(
-    DelegationStatus.UNDELEGATED
+export const ProposalCard = ({
+  proposal,
+  daoId,
+}: {
+  proposal: Proposal;
+  daoId: string;
+}) => {
+  const { fetchProposal } = useProposal();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<unknown | null>(null);
+  const [completeProposal, setCompleteProposal] = useState<Proposal | null>(
+    null
   );
 
   useEffect(() => {
-    userDelegatedVotesTo().then((delegatorAddr) => {
-      if (delegatorAddr === delegate.address) {
-        setDelegatedStatus(DelegationStatus.DELEGATED);
-      }
-    });
+    if (!proposal) return;
+
+    fetchProposal({ proposalId: proposal.proposalId })
+      .then((proposal: Proposal) => {
+        setCompleteProposal(proposal);
+      })
+      .catch((e: unknown) => {
+        setError(e);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
+  const PageContent = (children: JSX.Element) => {
+    return (
+      <div className="w-full">
+        <div className="w-full flex items-center flex-col">
+          <div className="flex w-full items-center"></div>
+          {children}
+        </div>
+      </div>
+    );
+  };
+
+  if (loading) {
+    return PageContent(
+      <div className="flex flex-col gap-10">
+        <ProposalCardSkeleton />
+      </div>
+    );
+  }
+
+  if (error) {
+    return PageContent(
+      <div className="flex flex-col gap-10">
+        <DefaultErrorMessage />
+      </div>
+    );
+  }
+
+  if (!completeProposal) return null;
+
   return (
-    <div
-      className={cc([
-        "flex flex-col border items-between h-full border-gray-300 text-white bg-[#F6F9F6] max-w-[382px] rounded-xl md:w-full",
-        {
-          "bg-[#B1FF6F]": delegatedStatus === DelegationStatus.DELEGATED,
-          "bg-[#F6F9F6]": delegatedStatus !== DelegationStatus.DELEGATED,
-        },
-      ])}
-    >
+    <div className="flex flex-col bg-[#F6F9F6] border items-between h-full border-gray-300 text-white rounded-xl md:w-full">
       <div className="flex gap-4 justify-between items-start flex-col p-4">
         <div className="flex justify-center items-start gap-2">
-          <div className="min-w-9 w-9 h-9 border rounded-[100px] flex justify-center items-center bg-[#9192951F]">
-            <InfoIcon />
-          </div>
           <div className="flex flex-col">
-            <div className="text-[#323439] text-sm font-medium leading-[16.80px]">
-              {delegate.name}
+            <div className="text-[#323439] text-sm font-medium leading-[16.80px] flex flex-wrap space-x-2">
+              <p className="font-semibold">Proposed by____</p>
+              <p className="break-all">{completeProposal.proposer}</p>
             </div>
-            <div className="text-[#323439] text-sm line-clamp-4">
-              {delegate.summary}
+            <div className="text-[#323439] mt-4 text-sm font-medium leading-[16.80px] flex flex-wrap space-x-2">
+              <p className="font-semibold">Description____</p>
+              <p className="break-all line-clamp-6">
+                {completeProposal.description}
+              </p>
             </div>
-          </div>
-        </div>
-        <div className="flex justify-center items-center gap-2">
-          <div className="w-9 h-9 border rounded-[100px] flex justify-center items-center bg-[#9192951F]">
-            <HandIcon />
-          </div>
-
-          <div className="flex flex-col">
-            <div className="text-[#323439] text-sm font-medium leading-[16.80px]">
-              Voting Power
-            </div>
-            <div className="text-[#323439] text-sm">{delegate.votingPower}</div>
           </div>
         </div>
       </div>
@@ -70,57 +83,11 @@ export const ProposalCard = ({ delegate }: { delegate: SummarizedAI }) => {
         <div className="text-black flex justify-between">
           <div className="gap-2 flex">
             <Link
-              className="px-3 py-2 bg-gray-200 text-sm rounded-[100px] hover:bg-gray-400 transition cursor-pointer"
-              href={`/delegates/${delegate.id}`}
+              className="px-3 py-2 bg-gray-200 text-sm rounded-[100px] hover:bg-gray-300 transition cursor-pointer"
+              href={`/dao/${daoId}/proposals/${completeProposal.proposalId}`}
             >
               See details
             </Link>
-          </div>
-          <div>
-            <button
-              disabled={delegatedStatus !== DelegationStatus.UNDELEGATED}
-              className="flex items-center space-x-2 bg-[#B1FF6F] text-[#17181C] rounded-[100px] text-sm font-normal px-3 py-2"
-              onClick={async () => {
-                let txHash: `0x${string}` | undefined = undefined;
-
-                setDelegatedStatus(DelegationStatus.DELEGATING);
-
-                try {
-                  txHash = await delegateVote({
-                    address: delegate.address as `0x${string}`,
-                  });
-
-                  const txReceipt = await awaitBlockchainTxReceipt(
-                    txHash as `0x${string}`
-                  );
-
-                  if (txReceipt.status === "success") {
-                    toast.success("Delegated votes successfully!");
-                    setDelegatedStatus(DelegationStatus.DELEGATED);
-                  }
-                } catch (e) {
-                  triggerToastMessageOnBlockchainError(e as BaseError);
-
-                  setDelegatedStatus(DelegationStatus.UNDELEGATED);
-                }
-              }}
-            >
-              {delegatedStatus !== DelegationStatus.DELEGATING ? (
-                <ArrowIcon className="w-3" fill="black" />
-              ) : (
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-black opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-black"></span>
-                </span>
-              )}
-              <p>
-                {delegatedStatus === DelegationStatus.DELEGATING
-                  ? "Delegating"
-                  : delegatedStatus === DelegationStatus.DELEGATED
-                  ? "Delegated"
-                  : "Delegate"}
-              </p>
-            </button>
           </div>
         </div>
       </div>
