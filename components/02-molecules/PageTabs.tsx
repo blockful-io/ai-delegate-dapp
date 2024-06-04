@@ -39,7 +39,7 @@ export const PageTabs = ({
   }, [daoId]);
 
   return (
-    <div className="w-full pt-10">
+    <div className="w-full">
       <div className="flex gap-2">
         <Link
           href={`/dao/${daoId}/proposals`}
@@ -67,18 +67,20 @@ export const PageTabs = ({
         </Link>
       </div>
 
-      <h1 className="text-3xl font-black mt-6 text-center text-[#B1FF6F]">
-        Welcome to {dao?.name || "____"} page
-      </h1>
+      <div className="mb-10">
+        <h1 className="text-3xl font-black mt-6 text-center">
+          {dao?.name || "____"} page
+        </h1>
 
-      {activeTab !== PageTab.NONE && dao && (
-        <Link
-          className="w-full justify-center items-center flex p-6 pb-0 underline underline-offset-4 hover:underline-offset-2 transition hover:text-[#B1FF6F]"
-          href={`/dao/${daoId}`}
-        >
-          {dao?.name} constitution
-        </Link>
-      )}
+        {activeTab !== PageTab.NONE && dao && (
+          <Link
+            className="w-full justify-center items-center flex p-6 pb-0 underline underline-offset-4 hover:underline-offset-2 transition hover:text-[#B1FF6F] mb-10"
+            href={`/dao/${daoId}`}
+          >
+            DAO constitution
+          </Link>
+        )}
+      </div>
     </div>
   );
 };

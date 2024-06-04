@@ -48,7 +48,7 @@ export default function ProposalDetailsPage({
 
   const PageContent = (children: JSX.Element) => {
     return (
-      <div className="w-full">
+      <div className="w-full -mt-10">
         <div className="w-full flex items-center flex-col">
           <div className="flex w-full items-center">
             <h1 className="pt-5 my-6 text-[#F6F9F6] w-full flex md:justify-center space-grotesk text-2xl">

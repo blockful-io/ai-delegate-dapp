@@ -99,10 +99,10 @@ const useDelegate = () => {
 
   const fetchDelegateVotes = useCallback(
     async ({ voter }: { voter: `0x${string}` }): Promise<Vote[]> => {
-      const { data: votes } = await client.get<Vote[]>(
+      const { data: votes } = await client.get<{ votes: Vote[] }>(
         `/ai-delegate-vote/${voter}`
       );
-      return votes;
+      return votes.votes;
     },
     [client]
   );

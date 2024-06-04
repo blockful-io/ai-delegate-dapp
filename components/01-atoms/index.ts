@@ -4,6 +4,8 @@ export * from "./FormCreateAI";
 export * from "./DelegateCardSkeleton";
 export * from "./ProposalCardSkeleton";
 export * from "./DefaultErrorMessage";
+export * from "./VoteCard";
+export * from "./BackButton";
 
 // Icons
 export * from "./icons/XIcon";

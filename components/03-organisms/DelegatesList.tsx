@@ -31,7 +31,7 @@ export const DelegatesList = ({ daoId }: { daoId: string }) => {
   };
 
   return (
-    <div className="w-full h-full flex flex-grow mb-10 border border-gray-100 p-2 rounded-xl mt-10">
+    <div className="w-full h-full flex flex-grow mb-10 border border-gray-100 p-2 rounded-xl">
       <div className="w-full h-full flex items-center flex-col flex-grow">
         <h1 className="font-semibold my-6 text-[#F6F9F6] w-full flex text-2xl space-grotesk justify-center">
           Delegate to biased AI

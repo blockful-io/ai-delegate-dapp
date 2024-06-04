@@ -1,12 +1,15 @@
-import { WalletIcon } from "../01-atoms";
+import { BackButton, WalletIcon } from "../01-atoms";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { UserDropdown } from "./UserDropdown";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 
 export const TheHeader = () => {
+  const router = useRouter();
+
   return (
-    <div className="top-0 bg-base-100 min-h-0 justify-between z-20">
+    <div className="mb-8 top-0 bg-base-100 min-h-0 justify-between z-20">
       <div className="flex justify-between w-full items-center">
         <Link href={"/"}>
           <Image width={32} height={32} alt="DApp Icon" src={"/DAppIcon.png"} />
@@ -70,6 +73,7 @@ export const TheHeader = () => {
           }}
         </ConnectButton.Custom>
       </div>
+      {router.pathname !== "/" && <BackButton />}
     </div>
   );
 };

@@ -35,7 +35,7 @@ export const ProposalsList = ({ daoId }: { daoId: string }) => {
   }, [daoId]);
 
   return (
-    <div className="w-full h-full flex flex-grow mb-10 mt-10 border border-gray-100 rounded-xl p-2">
+    <div className="w-full h-full flex flex-grow mb-10 border border-gray-100 rounded-xl p-2">
       <div className="w-full h-full flex items-center flex-col flex-grow">
         <h1 className="space-grotesk text-2xl font-semibold my-6 text-[#F6F9F6] w-full flex justify-center">
           {daoWithProposals?.name || "____"} proposals

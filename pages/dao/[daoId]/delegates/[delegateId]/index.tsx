@@ -3,31 +3,37 @@ import { useEffect, useState } from "react";
 import {
   DefaultErrorMessage,
   DelegateCardSkeleton,
+  VoteCard,
 } from "@/components/01-atoms";
-import useDelegate, { SummarizedAI } from "@/lib/hooks/useDelegate";
+import useDelegate, { SummarizedAI, Vote } from "@/lib/hooks/useDelegate";
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
   const { params } = context;
-  const { delegateId } = params || {};
+  const { delegateId, daoId } = params || {};
 
   return {
     props: {
       delegateId,
+      daoId,
     },
   };
 };
 
-export default function AIDelegatePage({ delegateId }: { delegateId: string }) {
+export default function AIDelegatePage({
+  delegateId,
+  daoId,
+}: {
+  delegateId: string;
+  daoId: string;
+}) {
   const { fetchDelegate, fetchDelegateVotes } = useDelegate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<unknown | null>(null);
   const [delegate, setDelegate] = useState<SummarizedAI | null>(null);
-  const [delegateVotes, setDelegateVotes] = useState<
-    Record<string, any>[] | null
-  >(null);
+  const [delegateVotes, setDelegateVotes] = useState<Vote[] | null>(null);
 
   useEffect(() => {
     setError(null);
@@ -37,7 +43,7 @@ export default function AIDelegatePage({ delegateId }: { delegateId: string }) {
         setDelegate(delegate);
 
         fetchDelegateVotes({ voter: delegate.address as `0x${string}` }).then(
-          (votes: Record<string, any>[]) => {
+          (votes: Vote[]) => {
             setDelegateVotes(votes);
           }
         );
@@ -50,7 +56,7 @@ export default function AIDelegatePage({ delegateId }: { delegateId: string }) {
 
   const PageContent = (children: JSX.Element) => {
     return (
-      <div className="w-full">
+      <div className="w-full -mt-10">
         <div className="w-full flex items-center flex-col">
           <div className="flex w-full items-center">
             <h1 className="pt-5 my-6 text-[#F6F9F6] w-full flex md:justify-center space-grotesk text-2xl">
@@ -81,7 +87,7 @@ export default function AIDelegatePage({ delegateId }: { delegateId: string }) {
 
   return PageContent(
     <>
-      <div className="flex flex-col space-y-3 w-full">
+      <div className="relative flex flex-col space-y-3 w-full">
         <h3 className="space-x-2 flex flex-wrap">
           <p className="underline underline-offset-1">ID____</p>
           <p>{delegate?.id}</p>
@@ -99,15 +105,13 @@ export default function AIDelegatePage({ delegateId }: { delegateId: string }) {
           <p className="break-word">{delegate?.summary}</p>
         </p>
       </div>
-      <div className="mt-20">
+      <div className="my-20">
         {Array.isArray(delegateVotes) && delegateVotes.length ? (
           <div>
-            <h3 className="underline underline-offset-1">Votes</h3>
-            <ul>
+            <h3 className="underline underline-offset-1 mb-6">Votes____</h3>
+            <ul className="flex flex-col space-y-8">
               {delegateVotes.map((vote) => (
-                <li key={vote.id}>
-                  {vote.type} - {vote.voter}
-                </li>
+                <VoteCard key={vote.proposalId} daoId={daoId} vote={vote} />
               ))}
             </ul>
           </div>
