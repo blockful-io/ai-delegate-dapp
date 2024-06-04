@@ -102,7 +102,7 @@ const useDelegate = () => {
       const { data: votes } = await client.get<{ votes: Vote[] }>(
         `/ai-delegate-vote/${voter}`
       );
-      return votes.votes;
+      return votes.votes.reverse();
     },
     [client]
   );

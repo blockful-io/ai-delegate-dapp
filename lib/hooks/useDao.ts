@@ -41,7 +41,7 @@ const useDao = () => {
 
       return {
         ...dao,
-        proposals: daoProposals,
+        proposals: daoProposals.reverse(),
       };
     });
   }, []);

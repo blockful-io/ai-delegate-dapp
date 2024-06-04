@@ -38,7 +38,7 @@ const useProposal = () => {
 
   const fetchProposals = useCallback(async (): Promise<Proposal[]> => {
     const { data: proposal } = await client.get<DAOWithProposals>(`/proposals`);
-    return proposal.proposals;
+    return proposal.proposals.reverse();
   }, [client]);
 
   const fetchProposal = useCallback(

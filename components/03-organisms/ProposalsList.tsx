@@ -20,7 +20,7 @@ export const ProposalsList = ({ daoId }: { daoId: string }) => {
     fetchDaos()
       .then((res: DAOWithProposals[]) => {
         const dao = res.find((dao) => String(dao.id) === daoId);
-        console.log(dao);
+
         if (dao) {
           setDaoWithProposals(dao);
         } else {
